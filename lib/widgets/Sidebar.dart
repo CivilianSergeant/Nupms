@@ -92,7 +92,7 @@ class _SidebarState extends State<Sidebar> {
                           onPressed: (){
                             Navigator.of(context).pop();
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context)=> PaybackCollectionScreen(title: "Payback Collection",)
+                                builder: (context)=> PaybackCollectionScreen()
                             ));
                           },
                         ),
