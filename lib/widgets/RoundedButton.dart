@@ -11,17 +11,22 @@ class RoundedButton extends StatelessWidget{
     return Padding(
       padding: EdgeInsets.all(10),
       child:Material(
+        clipBehavior:Clip.hardEdge,
         elevation: 5.0,
+
         color: (color!=null)? color : Colors.indigo,
         borderRadius: BorderRadius.circular(30),
-        child: MaterialButton(
-          minWidth: 200.0,
-          height: 20.0,
-          onPressed: onPressed,
-          child: Text(
-            text, style: TextStyle(
-            color: (textColor!=null) ? textColor : Colors.white70
-          ),
+        child: SizedBox(
+          width: 200,
+          height: 50,
+          child: FlatButton(
+
+            onPressed: onPressed,
+            child: Text(
+              text, style: TextStyle(
+              color: (textColor!=null) ? textColor : Colors.white70
+            ),
+            ),
           ),
         ),
       )

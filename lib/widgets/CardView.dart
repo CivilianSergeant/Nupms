@@ -15,12 +15,14 @@ class CardView extends StatelessWidget{
   double contentHeight;
   double baseHeight;
   Color background;
+  BoxDecoration decoration;
   Color contentBackground;
   Widget card;
   CardView({this.member,this.text,
     this.contentHeight,
     this.baseHeight,
     this.background,
+    this.decoration,
     this.contentBackground,
     this.card,
     this.showFooter});
@@ -30,7 +32,7 @@ class CardView extends StatelessWidget{
     return  Container(
       width: MediaQuery.of(context).size.width,
       height: baseHeight,
-      margin: EdgeInsets.all(10),
+//      margin: EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(10),
@@ -53,7 +55,8 @@ class CardView extends StatelessWidget{
           Container(
             width: MediaQuery.of(context).size.width,
             height: contentHeight,
-            color: contentBackground,
+
+            decoration: decoration,
             child: card
           ),
           CollectionItemFooter(member: member,show: showFooter,)
@@ -92,7 +95,7 @@ class CollectionItemFooter extends StatelessWidget {
         onPressed: (){
           print(('${member.currentPageNo} sdfsf'));
           double offset = (member.currentPageNo+1)*340.0;
-          member.pageController.animateTo(offset, duration: Duration(milliseconds:700), curve: Curves.easeIn);
+          member.pageController.animateTo(offset, duration: Duration(milliseconds:700), curve: Curves.easeInOut);
           context.read<PaybackCollectionData>().updateCurrentPage(member);
         },
       ),
@@ -130,6 +133,7 @@ class CollectionItemTitle extends StatelessWidget {
       ),),
     ];
   }
+
   List<Widget> showMemberInfo(){
     return [Text("${member?.businessName}",style:TextStyle(
         color: Colors.white70,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nupms_app/entity/Payback.dart';
 import 'package:nupms_app/model/MemberData.dart';
 import 'package:nupms_app/model/PaybackCollectionData.dart';
+import 'package:nupms_app/widgets/AmountTag.dart';
 import 'package:provider/provider.dart';
 
 class CollectionCard extends StatelessWidget {
@@ -59,88 +60,16 @@ class CollectionCard extends StatelessWidget {
                           padding: EdgeInsets.only(left: 15, top: 10),
                           child: Row(
                             children: [
-                              Column(
-                                children: [
-                                  Container(
-                                      child: Text(
-                                    "${payback.remaining}",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.redAccent,
-                                        fontSize: 15),
-                                  )),
-                                  Container(
-                                      decoration: BoxDecoration(
-                                          border: Border(
-                                              top: BorderSide(
-                                                  color: Colors.grey,
-                                                  width: 1,
-                                                  style: BorderStyle.solid))),
-                                      child: Text(
-                                        "RECOVERABLE",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w900,
-                                            color: Colors.black54),
-                                      ))
-                                ],
-                              ),
+                              AmountTag(amount: payback.remaining,text: "RECOVERABLE",),
                               SizedBox(
                                 width: 10,
                               ),
-                              Column(
-                                children: [
-                                  Container(
-                                      child: Text(
-                                    "${payback.totalPayback}",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.redAccent,
-                                        fontSize: 15),
-                                  )),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        border: Border(
-                                            top: BorderSide(
-                                                color: Colors.grey,
-                                                width: 1,
-                                                style: BorderStyle.solid))),
-                                    child: Text("TOTAL PAYBACK",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w900,
-                                            color: Colors.black54)),
-                                  )
-                                ],
-                              ),
+                              AmountTag(amount: payback.totalPayback,text:"TOTAL PAYBACK"),
                               SizedBox(
                                 width: 10,
                               ),
-                              Column(
-                                children: [
-                                  Container(
-                                      child: Text(
-                                    "${payback.collected}",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.redAccent,
-                                        fontSize: 15),
-                                  )),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        border: Border(
-                                            top: BorderSide(
-                                                color: Colors.grey,
-                                                width: 1,
-                                                style: BorderStyle.solid))),
-                                    child: Text("COLLECTED",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w900,
-                                            color: Colors.black54)),
-                                  )
-                                ],
-                              )
+                              AmountTag(amount: payback.collected,text:"COLLECTED"),
+
                             ],
                           ),
                         ),
@@ -265,3 +194,5 @@ class CollectionCard extends StatelessWidget {
         : "${payback.installmentNo}";
   }
 }
+
+

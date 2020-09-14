@@ -17,14 +17,20 @@ class Collection extends StatelessWidget{
           if( member.currentPageNo==null) {
             member.currentPageNo = i;
           }
-          return CardView(
-            member:member,
-            baseHeight: 298,
-            contentHeight:198,
-            background: Colors.indigoAccent,
-            contentBackground: Colors.white,
-            card: CollectionCard(member: member,),
-            showFooter: true,);
+          return Container(
+            margin: EdgeInsets.all(10),
+            child: CardView(
+              member:member,
+              baseHeight: 298,
+              contentHeight:198,
+              background: Colors.indigoAccent,
+              decoration: BoxDecoration(
+
+                color: Colors.white
+              ),
+              card: CollectionCard(member: member,),
+              showFooter: true,),
+          );
         });
   }
 

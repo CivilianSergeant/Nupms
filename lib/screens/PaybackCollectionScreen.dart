@@ -35,13 +35,11 @@ class _PaybackCollectionScreenState extends State<PaybackCollectionScreen>{
         return true;
       },
       child: Scaffold(
-          appBar: TitleBar().build(context),
-
+          appBar: TitleBar(elevation: 0,).build(context),
+          backgroundColor: Colors.indigo,
           body: SafeArea(
             child: SingleChildScrollView(
               child: Container(
-                  color: Color(0xffafafcf),
-
                   height: MediaQuery.of(context).size.height-80,
                   child: RefreshIndicator(
                     key: _refreshIndicatorKey,
@@ -66,7 +64,7 @@ class _PaybackCollectionScreenState extends State<PaybackCollectionScreen>{
 
   @override
   void initState() {
-    Future.delayed(Duration(milliseconds: 5),loadMembers);
+    Future.delayed(Duration(milliseconds: 2),loadMembers);
   }
 
   loadMembers() async {

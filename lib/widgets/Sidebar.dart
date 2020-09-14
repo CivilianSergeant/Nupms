@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nupms_app/model/AppData.dart';
 import 'package:nupms_app/screens/PaybackCollectionScreen.dart';
-
+import 'package:nupms_app/screens/ScheduleScreen.dart';
+import 'package:provider/provider.dart';
 
 class Sidebar extends StatefulWidget{
   String name;
@@ -84,9 +86,9 @@ class _SidebarState extends State<Sidebar> {
                         child: FlatButton(
                           child: Row(
                             children: <Widget>[
-                              Icon(Icons.wrap_text),
+                              Icon(Icons.monetization_on, color:Colors.black54),
                               SizedBox(width: 10,),
-                              Text("Payback Collection"),
+                              Text("Collection",style: TextStyle( color:Colors.black54),),
                             ],
                           ),
                           onPressed: (){
@@ -103,16 +105,17 @@ class _SidebarState extends State<Sidebar> {
                         child: FlatButton(
                           child: Row(
                             children: <Widget>[
-                              Icon(Icons.wrap_text),
+                              Icon(Icons.calendar_today, color:Colors.black54),
                               SizedBox(width: 10,),
-                              Text("Payback Schedule"),
+                              Text("Schedule",style: TextStyle(color:Colors.black54),),
                             ],
                           ),
                           onPressed: (){
-//                            Navigator.of(context).pop();
-//                            Navigator.of(context).push(MaterialPageRoute(
-//                                builder: (context)=> VoucherScreen()
-//                            ));
+                            context.read<AppData>().changeTitle("Schedule");
+                            Navigator.of(context).pop();
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context)=> ScheduleScreen()
+                            ));
                           },
                         ),
                       ),
@@ -122,9 +125,9 @@ class _SidebarState extends State<Sidebar> {
                         child: FlatButton(
                           child: Row(
                             children: <Widget>[
-                              Icon(Icons.wrap_text),
+                              Icon(Icons.account_balance, color:Colors.black54),
                               SizedBox(width: 10,),
-                              Text("Payback Deposit"),
+                              Text("Deposit",style: TextStyle( color:Colors.black54),),
                             ],
                           ),
                           onPressed: (){
