@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nupms_app/entity/Payback.dart';
 
 class AmountTag extends StatelessWidget {
   const AmountTag({

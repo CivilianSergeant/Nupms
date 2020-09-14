@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:nupms_app/config/AppConfig.dart';
 import 'package:nupms_app/model/AppData.dart';
+import 'package:nupms_app/persistance/DbProvider.dart';
 import 'package:nupms_app/widgets/RoundedButton.dart';
-import 'package:nupms_app/widgets/RoundedTextField.dart';
 import 'package:provider/provider.dart';
+import 'package:sqflite/sqflite.dart';
 
-class LoginScreen extends StatefulWidget {
+class SplashScreen extends StatefulWidget {
 
 
 
   @override
-  State<StatefulWidget> createState() => _LoginScreenState();
+  State<StatefulWidget> createState() => _SplashScreenState();
 
 }
 
-class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin{
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin{
   AnimationController animationController;
   Animation<Color> colorAnimation;
   Animation<double> tweenAnimation;
   double logoTop=0;
-
-  TextEditingController username = TextEditingController();
-  TextEditingController password = TextEditingController();
 
   @override
   void initState() {
@@ -46,6 +45,13 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     });
     animationController.forward();
 
+    initDb();
+  }
+
+  Future<void> initDb() async {
+    AppConfig.log("HERE INIT DB");
+    final Database db = await DbProvider.db.database;
+    context.read<AppData>().setAppLoaded(true);
   }
 
 
@@ -88,19 +94,14 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     fontWeight: FontWeight.bold
                   ),),
                 ),
-                RoundedTextField(hintText:"Username",topMargin: userNameTop, controller: username ,),
-                RoundedTextField(hintText:"Password",topMargin: 5,isObscure: true,obscuringChar: '*',controller: password ,),
+
                 SizedBox(height:50,),
                 SizedBox(
 
-                  width: MediaQuery.of(context).size.width-40,
-                  child:RoundedButton(
-                    text: "LOGIN",
-                    onPressed: (){
-                          context.read<AppData>().setLoggedIn(true);
-                    },
-                    color: Colors.indigo,
-
+                  width: 100,
+                  height: 100,
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(colorAnimation.value),
                   )
                 )
 
@@ -114,6 +115,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       ),
     );
   }
+
+
 
   @override
   void dispose() {

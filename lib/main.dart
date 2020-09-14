@@ -4,6 +4,7 @@ import 'package:nupms_app/model/AppData.dart';
 import 'package:nupms_app/model/PaybackCollectionData.dart';
 import 'package:nupms_app/screens/DashboardScreen.dart';
 import 'package:nupms_app/screens/LoginScreen.dart';
+import 'package:nupms_app/screens/SplashScreen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -33,6 +34,9 @@ class MyApp extends StatelessWidget {
 
   Widget switchScreen(BuildContext context){
 
+    if(!context.watch<AppData>().isAppLoaded){
+      return SplashScreen();
+    }
     if(context.watch<AppData>().isLoggedIn){
       return DashboardScreen();
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nupms_app/entity/Payback.dart';
+import 'package:nupms_app/model/Payback.dart';
+
 
 class MemberData{
   PageController pageController;

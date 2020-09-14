@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nupms_app/entity/Member.dart';
-import 'package:nupms_app/entity/Payback.dart';
 import 'package:nupms_app/model/AppData.dart';
+import 'package:nupms_app/model/Payback.dart';
 import 'package:nupms_app/model/PaybackCollectionData.dart';
+import 'package:nupms_app/persistance/entity/Member.dart';
 import 'package:nupms_app/widgets/Collection.dart';
-import 'package:nupms_app/widgets/CardView.dart';
 import 'package:nupms_app/widgets/TitleBar.dart';
 import 'package:provider/provider.dart';
 

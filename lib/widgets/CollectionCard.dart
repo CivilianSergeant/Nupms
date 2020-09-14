@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nupms_app/entity/Payback.dart';
 import 'package:nupms_app/model/MemberData.dart';
+import 'package:nupms_app/model/Payback.dart';
 import 'package:nupms_app/model/PaybackCollectionData.dart';
 import 'package:nupms_app/widgets/AmountTag.dart';
 import 'package:provider/provider.dart';

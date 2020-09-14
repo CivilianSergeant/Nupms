@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:nupms_app/entity/Member.dart';
-import 'package:nupms_app/entity/Payback.dart';
 import 'package:nupms_app/model/MemberData.dart';
+import 'package:nupms_app/model/Payback.dart';
 
 class PaybackCollectionData with ChangeNotifier{
 
