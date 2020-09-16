@@ -1,5 +1,6 @@
 class Investment{
   int id;
+  int entrepreneurId;
   int newBusinessProposalId;
   String chequeNo;
   double amount;
@@ -10,6 +11,7 @@ class Investment{
 
   Investment({
     this.id,
+    this.entrepreneurId,
     this.newBusinessProposalId,
     this.chequeNo,
     this.amount,
@@ -21,6 +23,7 @@ class Investment{
   Map<String,dynamic> toMap(){
     return {
       'id': id,
+      'entrepreneur_id': entrepreneurId,
       'new_business_proposal_id': newBusinessProposalId,
       'cheque_no': chequeNo,
       'amount': amount,

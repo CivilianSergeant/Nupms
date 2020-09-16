@@ -89,8 +89,9 @@ class CollectionCard extends StatelessWidget {
                           "PAYBACK DATE: ${payback.paybackDate.toUpperCase()}",
                           style: TextStyle(
                               fontWeight: FontWeight.w600,
-                              color: Colors.blueAccent),
-                        )),
+                              color: (payback.isDue)? Colors.redAccent:Colors.blueAccent),
+                        )
+                    ),
                   ],
                 ),
                 Row(
@@ -103,6 +104,20 @@ class CollectionCard extends StatelessWidget {
                       child: Column(
                         children: [
                           TextField(
+                            readOnly: true,
+                            controller: payback.collectionDate,
+                            onTap: (){
+                              showDatePicker(context: context, initialDate:payback.fromInitial , firstDate: DateTime(payback.fromStartYear), lastDate: DateTime(payback.fromEndYear))
+                                  .then((date){
+                                if(date != null){
+                                  payback.collectionDate.text = (date.toString().substring(0,11).trim());
+                                    payback.fromInitial = DateTime.parse(payback.collectionDate.text);
+                                  //                             getAgeInWords();
+                                }else{
+                                  payback.collectionDate.text="";
+                                }
+                              });
+                            },
                             style: TextStyle(
                               fontSize: 12,
                             ),
@@ -116,6 +131,7 @@ class CollectionCard extends StatelessWidget {
                       width: 100,
                       margin: EdgeInsets.only(left: 10),
                       child: TextField(
+                        controller:payback.receiptNo,
                         style: TextStyle(fontSize: 12),
                         decoration: InputDecoration(hintText: "Receipt No"),
                       ),
@@ -135,7 +151,7 @@ class CollectionCard extends StatelessWidget {
                         value: payback.selectedType,
                         onChanged: (value) {
 //                                        setState(() {
-//                                          payback.selectedType = value;
+                              payback.selectedType = value;
 //                                        });
                         },
                         items: context
@@ -146,7 +162,7 @@ class CollectionCard extends StatelessWidget {
                                   child: Text(e['name']),
                                 ))
                             .toList(),
-                        hint: Text("Col. Type"),
+                        hint: Text("Deposit Mode"),
                         underline: SizedBox.shrink(),
                       ),
                     ),
@@ -160,6 +176,7 @@ class CollectionCard extends StatelessWidget {
                       width: 90,
                       margin: EdgeInsets.only(left: 10),
                       child: TextField(
+                        controller: payback.ddCheque,
                         style: TextStyle(fontSize: 12),
                         decoration: InputDecoration(hintText: "DD / Cheque"),
                       ),
@@ -168,6 +185,7 @@ class CollectionCard extends StatelessWidget {
                       width: 100,
                       margin: EdgeInsets.only(left: 10),
                       child: TextField(
+                        controller: payback.collectionAmount,
                         style: TextStyle(fontSize: 12),
                         decoration: InputDecoration(hintText: "Amount"),
                       ),
@@ -176,6 +194,7 @@ class CollectionCard extends StatelessWidget {
                       width: 100,
                       margin: EdgeInsets.only(left: 10),
                       child: TextField(
+                        controller: payback.remark,
                         style: TextStyle(fontSize: 12),
                         decoration: InputDecoration(hintText: "Remark"),
                       ),

@@ -11,9 +11,17 @@ class UserService extends NetworkService{
 
   Future<User> checkCurrentUser() async {
 
-//    User user = await find(imei);
-//    return user;
+    User user = await userRepo.find(firstOnly: true);
+    return user;
 
-    return User();
   }
+
+  Future<int> saveUser(User user) async {
+    return await userRepo.save(user.toMap());
+  }
+  Future<void> removeUsers() async{
+    await userRepo.truncate();
+  }
+
+
 }

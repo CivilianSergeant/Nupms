@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:nupms_app/config/AppConfig.dart';
 import 'package:nupms_app/model/AppData.dart';
+import 'package:nupms_app/model/LoginDataNotifier.dart';
+import 'package:nupms_app/model/ServiceResponse.dart';
+import 'package:nupms_app/persistance/services/LoginService.dart';
 import 'package:nupms_app/widgets/RoundedButton.dart';
 import 'package:nupms_app/widgets/RoundedTextField.dart';
+import 'package:nupms_app/widgets/ToastMessage.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -93,11 +98,32 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 SizedBox(height:50,),
                 SizedBox(
 
-                  width: MediaQuery.of(context).size.width-40,
-                  child:RoundedButton(
+                  width: (context.watch<AppData>().isProcessing)? 100 : MediaQuery.of(context).size.width-40,
+                  child:(context.watch<AppData>().isProcessing)? SizedBox(width: 100 , height:100, child:
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Text("${context.watch<LoginDataNotifier>().getProgress()}",
+                        style: TextStyle(color: Colors.white70,fontWeight: FontWeight.w900),),
+                        SizedBox(width:70,height:70,child: CircularProgressIndicator())
+                      ],
+                    )
+                  ) : RoundedButton(
                     text: "LOGIN",
-                    onPressed: (){
-                          context.read<AppData>().setLoggedIn(true);
+                    onPressed: () async{
+                          AppConfig.log(username.text);
+                          AppConfig.log(password.text);
+                          LoginService loginService = LoginService();
+                          context.read<AppData>().setProcessing(true);
+                          ServiceResponse serviceResponse = await loginService.authenticate(context:context,username: username.text, password: password.text);
+                          context.read<AppData>().setProcessing(false);
+
+                          if(serviceResponse !=null && serviceResponse.status!=200){
+                            ToastMessage.showMesssage(status:serviceResponse.status,message:serviceResponse.message,context: context);
+                          }else{
+                            context.read<AppData>().setLoggedIn(true);
+                          }
+
                     },
                     color: Colors.indigo,
 
@@ -114,6 +140,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       ),
     );
   }
+
+
 
   @override
   void dispose() {

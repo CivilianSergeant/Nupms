@@ -1,11 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:nupms_app/config/AppConfig.dart';
 import 'package:nupms_app/model/MemberData.dart';
 import 'package:nupms_app/model/Payback.dart';
 
 class PaybackCollectionData with ChangeNotifier{
 
     List<MemberData> _members = [];
+    String selectedCode;
+
+    String selectedDate;
+
+
     List<Map<String,dynamic>> _types = [];
 
     List<Map<String,dynamic>> get Types{
@@ -15,6 +23,33 @@ class PaybackCollectionData with ChangeNotifier{
     List<MemberData> get Members{
         return _members;
     }
+
+    void setTypes(List<Map<String,dynamic>> t){
+        this._types = t;
+        notifyListeners();
+    }
+
+    void setMemberData(List<MemberData> memberData){
+        this._members = memberData;
+        notifyListeners();
+    }
+
+    void setSelectedCode(String c){
+        this.selectedCode = c;
+        notifyListeners();
+    }
+
+    void setDate(String d){
+        AppConfig.log(d);
+        this.selectedDate = d;
+        notifyListeners();
+    }
+
+    String getDate(){
+        AppConfig.log(selectedDate);
+        return DateFormat("dd MMMM, yyyy").format(DateTime.parse(selectedDate));
+    }
+
 
 
     void updateCurrentPage(MemberData member, {int value}){

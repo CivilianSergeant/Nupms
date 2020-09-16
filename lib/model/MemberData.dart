@@ -18,4 +18,6 @@ class MemberData{
     this.businessName,
     this.paybacks
   });
+
+
 }

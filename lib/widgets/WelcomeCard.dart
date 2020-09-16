@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
+import 'package:nupms_app/model/AppData.dart';
+import 'package:provider/provider.dart';
 
 class WelcomeCard extends StatelessWidget{
 
   TextStyle textStyle = TextStyle(
     fontWeight: FontWeight.w700,
     color: Colors.white70,
-    fontSize: 12
+    fontSize: 16
   );
 
   @override
@@ -18,24 +20,16 @@ class WelcomeCard extends StatelessWidget{
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal:10.0),
-          child: Text("Employee Code",style: textStyle,),
+          child: Text("${context.watch<AppData>().user.employeeName} (${context.watch<AppData>().user.employeeCode})",style: textStyle,),
         ),
+
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.0),
-          child: Text("Employee Name",style: textStyle,),
+          child: Text("${context.watch<AppData>().user.zoneName},"
+              "${context.watch<AppData>().user.areaName}, "
+              "${context.watch<AppData>().user.unitName}", style: textStyle,),
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10.0),
-          child: Text("Zone", style: textStyle,),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal:10.0),
-          child: Text("Area", style: textStyle,),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10.0),
-          child: Text("Unit", style: textStyle,),
-        ),
+
       ],
     );
   }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:nupms_app/config/AppConfig.dart';
 import 'package:nupms_app/model/MemberData.dart';
+import 'package:nupms_app/model/Payback.dart';
 import 'package:nupms_app/model/PaybackCollectionData.dart';
 import 'package:nupms_app/widgets/CollectionCard.dart';
 import 'package:nupms_app/widgets/RoundedButton.dart';
@@ -91,7 +93,9 @@ class CollectionItemFooter extends StatelessWidget {
         color: Colors.indigoAccent,
         text: "COLLECT",
         onPressed: (){
-          print(('${member.currentPageNo} sdfsf'));
+          Payback payback = member.paybacks[member.currentPageNo];
+          AppConfig.log(payback.toMap());
+          AppConfig.log(('Current Page ${member.currentPageNo} sdfsf'));
           double offset = (member.currentPageNo+1)*340.0;
           member.pageController.animateTo(offset, duration: Duration(milliseconds:700), curve: Curves.easeInOut);
           context.read<PaybackCollectionData>().updateCurrentPage(member);

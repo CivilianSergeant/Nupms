@@ -1,7 +1,7 @@
 enum Env {SandBox, Prod, Dev}
 
 class AppConfig{
-  static Env env = Env.SandBox;
+  static Env env = Env.Dev;
 
   static Env getEnv(){
       return env;

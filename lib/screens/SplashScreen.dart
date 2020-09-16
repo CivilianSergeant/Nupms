@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:nupms_app/config/AppConfig.dart';
 import 'package:nupms_app/model/AppData.dart';
 import 'package:nupms_app/persistance/DbProvider.dart';
+import 'package:nupms_app/persistance/entity/User.dart';
+import 'package:nupms_app/persistance/repository/UserRepository.dart';
+import 'package:nupms_app/persistance/services/UserService.dart';
 import 'package:nupms_app/widgets/RoundedButton.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -51,7 +54,14 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   Future<void> initDb() async {
     AppConfig.log("HERE INIT DB");
     final Database db = await DbProvider.db.database;
+    UserService userService = UserService(userRepo: UserRepository());
+    User user = await userService.checkCurrentUser();
+    
+    if(user !=null ){
+      context.read<AppData>().setUser(user);
+    }
     context.read<AppData>().setAppLoaded(true);
+
   }
 
 

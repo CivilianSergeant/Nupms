@@ -1,4 +1,5 @@
 class Member{
+  int id;
   int entrepreneurId;
   int newBusinessProposalId;
   String entrepreneurCode;
@@ -8,8 +9,10 @@ class Member{
   String currency;
   String investmentDuration;
   double totalInvestment;
+  int phaseNo;
 
   Member({
+    this.id,
     this.entrepreneurId,
     this.newBusinessProposalId,
     this.entrepreneurCode,
@@ -18,12 +21,14 @@ class Member{
     this.approvedInvestment,
     this.currency,
     this.investmentDuration,
-    this.totalInvestment
+    this.totalInvestment,
+    this.phaseNo
   });
 
 
   Map<String,dynamic> toMap(){
     return {
+      'id':id,
       'entrepreneur_id': entrepreneurId,
       'entrepreneur_code': entrepreneurCode,
       'entrepreneur_name': entrepreneurName,
@@ -32,7 +37,8 @@ class Member{
       'approved_investment':approvedInvestment,
       'currency': currency,
       'investment_duration': investmentDuration,
-      'total_investment': totalInvestment
+      'total_investment': totalInvestment,
+      'phase_no':phaseNo
     };
   }
 }

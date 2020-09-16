@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nupms_app/config/AppConfig.dart';
 import 'package:nupms_app/model/AppData.dart';
+import 'package:nupms_app/model/LoginDataNotifier.dart';
 import 'package:nupms_app/model/PaybackCollectionData.dart';
 import 'package:nupms_app/screens/DashboardScreen.dart';
 import 'package:nupms_app/screens/LoginScreen.dart';
@@ -11,7 +13,8 @@ void main() {
   runApp( MultiProvider(
       providers: [
         ChangeNotifierProvider<AppData>( create: (context) => AppData()),
-        ChangeNotifierProvider<PaybackCollectionData>( create: (context) => PaybackCollectionData())
+        ChangeNotifierProvider<PaybackCollectionData>( create: (context) => PaybackCollectionData()),
+        ChangeNotifierProvider<LoginDataNotifier>( create: (context) => LoginDataNotifier())
       ],
       child:MyApp()));
 }
@@ -37,9 +40,12 @@ class MyApp extends StatelessWidget {
     if(!context.watch<AppData>().isAppLoaded){
       return SplashScreen();
     }
-    if(context.watch<AppData>().isLoggedIn){
-      return DashboardScreen();
+    if(context.watch<AppData>().user !=null){
+      if(!context.watch<AppData>().user.downloadMaster) {
+        return DashboardScreen();
+      }
     }
+    AppConfig.log("here");
     return LoginScreen();
   }
 }
