@@ -152,6 +152,7 @@ class CollectionCard extends StatelessWidget {
                         onChanged: (value) {
 //                                        setState(() {
                               payback.selectedType = value;
+                              context.read<PaybackCollectionData>().updateUI();
 //                                        });
                         },
                         items: context

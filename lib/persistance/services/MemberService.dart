@@ -38,6 +38,10 @@ class MemberService{
 
 
      AppConfig.log("Members : ${members.length}");
+     Batch memberBatch = db.batch();
+     Batch investmentBatch = db.batch();
+     Batch scheduleBatch = db.batch();
+     Batch collectionBatch = db.batch();
 
      for(dynamic element in members){
        Map<String,dynamic> map = (Member(
@@ -53,12 +57,12 @@ class MemberService{
          phaseNo:element['phaseNo']
        ).toMap());
 
-       int memberId = await db.insert(MembersTable().tableName, map);
-       if(memberId>0){
-         AppConfig.log("MemberID: ${memberId}");
+       memberBatch.insert(MembersTable().tableName, map);
+//       if(memberId>0){
+         AppConfig.log("MemberID: ${memberCount}");
          memberCount++;
 
-         Batch investmentBatch = db.batch();
+
 
          if(element['investments'] == null && element['schedules'] == null){
            continue;
@@ -78,18 +82,11 @@ class MemberService{
             investmentBatch.insert(InvestmentsTable().tableName, _investment);
             investmentCount++;
          }
-         await investmentBatch.commit(noResult: true);
 
 
-         Batch scheduleBatch = db.batch();
-         Batch collectionBatch = db.batch();
          for(dynamic schedule in element['schedules']){
             String paybackDate = schedule['paybackable']['date'];
-
-
             paybackDate = _correctDateFormat(paybackDate);
-
-
 
             Map<String,dynamic> _schedule = (Schedule(
               entrepreneurId: element['entrepreneurId'],
@@ -102,10 +99,8 @@ class MemberService{
             ).toMap());
 
 
-
             scheduleBatch.insert(SchedulesTable().tableName, _schedule);
             scheduleCount++;
-
 
 
             if(schedule['payback'] !=null) {
@@ -126,15 +121,17 @@ class MemberService{
 
             }
          }
+         await Future.delayed(Duration(milliseconds: 100),(){
+           context.read<LoginDataNotifier>().setMemberLoaded(memberCount);
+         });
 
-         await scheduleBatch.commit(noResult: true);
-         await collectionBatch.commit(noResult: true);
-
-
-         context.read<LoginDataNotifier>().setMemberLoaded(memberCount);
-       }
-
+//       }
      }
+     await memberBatch.commit(noResult: true);
+     await investmentBatch.commit(noResult: true);
+     await scheduleBatch.commit(noResult: true);
+     await collectionBatch.commit(noResult: true);
+
      return {
        'memberInserted':memberCount,
        'investmentInserted':investmentCount,
@@ -198,5 +195,15 @@ class MemberService{
     Database db = await DbProvider.db.database;
     List<Map<String,dynamic>> maps = await db.rawQuery("SELECT count(*) as total from members");
     return (maps.length>0)? (maps.first)['total']:0;
+  }
+
+  static Future<List<Map<String,dynamic>>> getMembers({String code}) async{
+    Database db = await DbProvider.db.database;
+    String sql = "SELECT * FROM members m ";
+    if(code!=null){
+      sql += " WHERE m.entrepreneur_code='${code}'";
+    }
+    sql+=" ORDER BY m.entrepreneur_code ASC";
+    return db.rawQuery(sql);
   }
 }

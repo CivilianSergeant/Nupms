@@ -7,7 +7,10 @@ class MemberData{
   int currentPageNo;
   String code;
   String businessName;
+  String unitName;
+  String entrepreneurName;
   int slNo;
+  double totalInvestment;
   List<Payback> paybacks;
 
   MemberData({
@@ -16,7 +19,10 @@ class MemberData{
     this.currentPageNo,
     this.code,
     this.businessName,
-    this.paybacks
+    this.unitName,
+    this.entrepreneurName,
+    this.paybacks,
+    this.totalInvestment
   });
 
 

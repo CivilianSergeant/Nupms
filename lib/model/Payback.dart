@@ -15,6 +15,8 @@ class Payback{
   TextEditingController collectionDate;
   TextEditingController receiptNo;
   int type;
+  double investmentPB;
+  double otf;
   TextEditingController ddCheque;
   int companyAccountId;
   TextEditingController collectionAmount;
@@ -29,8 +31,8 @@ class Payback{
     this.collected,this.totalPayback,this.paybackDate,this.isDue,
     this.receiptNo,this.collectionAmount,this.entrepreneurId,
     this.newBusinessProposalId,this.remark,this.paybackId,
-    this.ddCheque,this.fromEndYear,this.fromStartYear,this.fromInitial
-
+    this.ddCheque,this.fromEndYear,this.fromStartYear,this.fromInitial,
+    this.investmentPB,this.otf
   });
 
   Map<String,dynamic> toMap(){

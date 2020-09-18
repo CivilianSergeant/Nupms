@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:nupms_app/model/MemberData.dart';
+import 'package:nupms_app/model/Payback.dart';
 import 'package:nupms_app/widgets/AmountTag.dart';
 
 class ScheduleDetailCard extends StatelessWidget{
+  MemberData memberData;
+  Payback payback;
+  ScheduleDetailCard({this.payback,this.memberData});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -17,7 +23,7 @@ class ScheduleDetailCard extends StatelessWidget{
               padding: EdgeInsets.only(left: 10, top: 10),
               child: CircleAvatar(
                   child: Text(
-                    "01",
+                    "${getInstallmentNo(payback)}",
                   ),
                 ),
               ),
@@ -29,11 +35,11 @@ class ScheduleDetailCard extends StatelessWidget{
                     Row(
                       children: [
                         SizedBox(width: 10,),
-                        AmountTag(amount:40000,text: "INVESTMENT PB",),
+                        AmountTag(amount:payback.investmentPB,text: "INVESTMENT PB",),
                         SizedBox(width: 10,),
-                        AmountTag(amount:8000,text: "OTF",),
+                        AmountTag(amount:payback.otf,text: "OTF",),
                         Spacer(),
-                        AmountTag(amount:48000,text: "TOTAL PAYABLE",)
+                        AmountTag(amount:payback.totalPayback,text: "TOTAL PAYABLE",)
                       ]
                     ),
 
@@ -48,8 +54,8 @@ class ScheduleDetailCard extends StatelessWidget{
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              BigAmountTag(amount: 48000,amountSize: 30, text: "REMAINING",),
-              BigAmountTag(amount: 0, amountSize:30, text: "PAID",)
+              BigAmountTag(amount: (payback.totalPayback-payback.collected),amountSize: 30, text: "REMAINING",),
+              BigAmountTag(amount: payback.collected, amountSize:30, text: "PAID",)
             ],
           )
 
@@ -58,6 +64,12 @@ class ScheduleDetailCard extends StatelessWidget{
     );
   }
 
+}
+
+String getInstallmentNo(Payback payback) {
+  return (payback.installmentNo < 10)
+      ? "0${payback.installmentNo}"
+      : "${payback.installmentNo}";
 }
 
 class BigAmountTag extends StatelessWidget {

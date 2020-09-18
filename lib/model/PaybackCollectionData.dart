@@ -24,6 +24,21 @@ class PaybackCollectionData with ChangeNotifier{
         return _members;
     }
 
+    void updateUI(){
+        notifyListeners();
+    }
+
+    void updateMemberPayback(MemberData member, MemberData lastRecord){
+        if(lastRecord==null){
+            AppConfig.log("HERE LastRecord null");
+            return;
+        }
+       int index =  _members.indexOf(member);
+       _members[index]=lastRecord;
+       AppConfig.log('Index ${index}');
+       notifyListeners();
+    }
+
     void setTypes(List<Map<String,dynamic>> t){
         this._types = t;
         notifyListeners();

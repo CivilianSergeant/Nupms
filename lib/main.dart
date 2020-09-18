@@ -4,6 +4,7 @@ import 'package:nupms_app/config/AppConfig.dart';
 import 'package:nupms_app/model/AppData.dart';
 import 'package:nupms_app/model/LoginDataNotifier.dart';
 import 'package:nupms_app/model/PaybackCollectionData.dart';
+import 'package:nupms_app/model/ScheduleData.dart';
 import 'package:nupms_app/screens/DashboardScreen.dart';
 import 'package:nupms_app/screens/LoginScreen.dart';
 import 'package:nupms_app/screens/SplashScreen.dart';
@@ -14,6 +15,7 @@ void main() {
       providers: [
         ChangeNotifierProvider<AppData>( create: (context) => AppData()),
         ChangeNotifierProvider<PaybackCollectionData>( create: (context) => PaybackCollectionData()),
+        ChangeNotifierProvider<ScheduleData>( create: (context) => ScheduleData()),
         ChangeNotifierProvider<LoginDataNotifier>( create: (context) => LoginDataNotifier())
       ],
       child:MyApp()));

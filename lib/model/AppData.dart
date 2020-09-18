@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:nupms_app/persistance/entity/User.dart';
+import 'package:nupms_app/persistance/services/CollectionService.dart';
 
 class AppData with ChangeNotifier{
     String _title = "NUPMS";
@@ -7,6 +8,7 @@ class AppData with ChangeNotifier{
     bool isProcessing = false;
     bool isAppLoaded = false;
     int totalEnts = 0;
+    String selectedDate="";
     double totalCollectedAmount=0;
 
     User user = null;
@@ -24,8 +26,18 @@ class AppData with ChangeNotifier{
       totalEnts = t;
       notifyListeners();
     }
+    void updateTotalCollection(String date) async{
+      double _totalCollectedAmount = await CollectionService.getCollectionCount(date);
+      totalCollectedAmount = _totalCollectedAmount;
+      notifyListeners();
+    }
     void setTotalCollectedAmount(double t){
       totalCollectedAmount = t;
+      notifyListeners();
+    }
+
+    void setDate(String date){
+      this.selectedDate = date;
       notifyListeners();
     }
 

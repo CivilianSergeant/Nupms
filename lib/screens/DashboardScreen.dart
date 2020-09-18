@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nupms_app/model/AppData.dart';
 import 'package:nupms_app/persistance/entity/User.dart';
 import 'file:///C:/Users/ASUS/IdeaProjects/nupms_app/lib/persistance/services/MemberService.dart';
@@ -71,13 +72,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   loadInfo() async{
     int totalEnts = await MemberService.getMembersCount();
-    double totalCollectedAmount = await CollectionService.getCollectionCount();
+
+    context.read<AppData>().setDate(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     UserService userService = UserService(userRepo: UserRepository());
     User user = await userService.checkCurrentUser();
 
     context.read<AppData>().setUser(user);
     context.read<AppData>().setTotalEnts(totalEnts);
-    context.read<AppData>().setTotalCollectedAmount(totalCollectedAmount);
+    context.read<AppData>().updateTotalCollection(DateFormat('yyyy-MM-dd').format(DateTime.now()));
   }
 
 }

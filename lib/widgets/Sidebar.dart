@@ -86,25 +86,6 @@ class _SidebarState extends State<Sidebar> {
                         child: FlatButton(
                           child: Row(
                             children: <Widget>[
-                              Icon(Icons.monetization_on, color:Colors.black54),
-                              SizedBox(width: 10,),
-                              Text("Collection",style: TextStyle( color:Colors.black54),),
-                            ],
-                          ),
-                          onPressed: (){
-                            Navigator.of(context).pop();
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context)=> PaybackCollectionScreen()
-                            ));
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        height: 30,
-                        width: 230,
-                        child: FlatButton(
-                          child: Row(
-                            children: <Widget>[
                               Icon(Icons.calendar_today, color:Colors.black54),
                               SizedBox(width: 10,),
                               Text("Schedule",style: TextStyle(color:Colors.black54),),
@@ -119,6 +100,26 @@ class _SidebarState extends State<Sidebar> {
                           },
                         ),
                       ),
+                      SizedBox(
+                        height: 30,
+                        width: 230,
+                        child: FlatButton(
+                          child: Row(
+                            children: <Widget>[
+                              Icon(Icons.monetization_on, color:Colors.black54),
+                              SizedBox(width: 10,),
+                              Text("Collection",style: TextStyle( color:Colors.black54),),
+                            ],
+                          ),
+                          onPressed: (){
+                            Navigator.of(context).pop();
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context)=> PaybackCollectionScreen()
+                            ));
+                          },
+                        ),
+                      ),
+
                       SizedBox(
                         height: 30,
                         width: 230,

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:nupms_app/config/AppConfig.dart';
+import 'package:nupms_app/model/AppData.dart';
 import 'package:nupms_app/model/MemberData.dart';
 import 'package:nupms_app/model/Payback.dart';
 import 'package:nupms_app/model/PaybackCollectionData.dart';
+import 'package:nupms_app/persistance/services/CollectionService.dart';
 import 'package:nupms_app/widgets/CollectionCard.dart';
 import 'package:nupms_app/widgets/RoundedButton.dart';
+import 'package:nupms_app/widgets/ToastMessage.dart';
 import 'package:provider/provider.dart';
 
 class CardView extends StatelessWidget{
@@ -89,19 +92,86 @@ class CollectionItemFooter extends StatelessWidget {
       padding: EdgeInsets.only(left:5,right:(MediaQuery.of(context).size.width-150)),
       width: MediaQuery.of(context).size.width,
       height: 48,
-      child: RoundedButton(
+      child: (member.currentPageNo>0)? SizedBox.shrink(): RoundedButton(
         color: Colors.indigoAccent,
         text: "COLLECT",
-        onPressed: (){
+        onPressed: () async{
           Payback payback = member.paybacks[member.currentPageNo];
-          AppConfig.log(payback.toMap());
-          AppConfig.log(('Current Page ${member.currentPageNo} sdfsf'));
-          double offset = (member.currentPageNo+1)*340.0;
-          member.pageController.animateTo(offset, duration: Duration(milliseconds:700), curve: Curves.easeInOut);
-          context.read<PaybackCollectionData>().updateCurrentPage(member);
+          AppConfig.log("CurrentPageNo ${member.currentPageNo}");
+          AppConfig.log(payback.installmentNo);
+          if(validate(payback,context)){
+
+            AppConfig.log(('Current Page ${member.currentPageNo} sdfsf'));
+
+            bool status = await CollectionService.saveCollection(payback);
+            if(status) {
+              context.read<AppData>().updateTotalCollection(payback.collectionDate.text);
+              double collectionAmount = double.parse(payback.collectionAmount.text);
+              double recoverable = payback.remaining;
+
+              List<MemberData> updatedRecords = await CollectionService
+                  .getCollection(code: member.code, date: context.read<PaybackCollectionData>().selectedDate);
+              MemberData lastestRecord = (updatedRecords.length > 0)
+                  ? updatedRecords.first
+                  : null;
+
+              if(collectionAmount>=recoverable) {
+                double offset = 340.0;
+                await member.pageController.animateTo(
+                    offset, duration: Duration(milliseconds: 700),
+                    curve: Curves.easeInOut);
+              }
+
+              context.read<PaybackCollectionData>().updateMemberPayback(member,lastestRecord);
+
+              if(collectionAmount>=recoverable) {
+                context.read<PaybackCollectionData>().updateCurrentPage(member);
+              }
+            }
+          }
+
         },
       ),
     );
+  }
+
+  bool validate(Payback payback, BuildContext context){
+    AppConfig.log(payback.toMap());
+    double totalPayback = payback.totalPayback;
+    double collected = payback.collected;
+    double collectionAmount = (payback.collectionAmount.text.length>0)? double.parse(payback.collectionAmount.text):0;
+    double recoverable = payback.remaining;
+
+    AppConfig.log(payback.collectionDate.text.trim().length);
+    if(payback.collectionDate.text.trim().length==0){
+      ToastMessage.showMesssage(status: 500,message:'Please Select Collection Date',context: context);
+      return false;
+    }
+
+    if(payback.receiptNo.text.trim().length==0){
+      ToastMessage.showMesssage(status: 500,message:'Please Write Receipt No',context: context);
+      return false;
+    }
+
+    if(payback.selectedType==null){
+      ToastMessage.showMesssage(status: 500,message:'Please Select Deposit Type',context: context);
+      return false;
+    }
+
+    if(payback.collectionAmount.text.trim().length==0){
+      ToastMessage.showMesssage(status: 500,message:'Collection Amount Required',context: context);
+      return false;
+    }
+
+    if(totalPayback < (collected+collectionAmount)){
+      double remaingingAmount = (collected+collectionAmount)-totalPayback;
+      AppConfig.log(remaingingAmount);
+      String msg = "Collection Amount should not exceed total pabyack of installment. you can collect ${remaingingAmount} for next installment";
+      ToastMessage.showMesssage(status: 500,message:msg,context: context);
+      return false;
+    }
+
+    return true;
   }
 }
 
