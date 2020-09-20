@@ -23,6 +23,8 @@ class TitleBar extends StatelessWidget{
         icon: Icon(icon),
         onPressed: onPressed,
       ));
+    }else{
+      actions.add(SizedBox(width: 40,));
     }
     return AppBar(
       elevation: (elevation != null)? elevation: 5,

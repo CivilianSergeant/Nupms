@@ -111,7 +111,8 @@ class MemberService{
                   paybackId: schedule['paybackId'],
                   installmentNo: schedule['installmentNo'],
                   collectedAmount: schedule['payback']['amount'],
-                  collectionDate: collectionDate
+                  collectionDate: collectionDate,
+                  isSynced: true,
               ).toMap());
 
               collectionBatch.insert(

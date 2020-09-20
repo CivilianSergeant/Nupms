@@ -1,5 +1,9 @@
 import 'package:nupms_app/config/AppConfig.dart';
 import 'package:nupms_app/persistance/tables/CollectionsTable.dart';
+import 'package:nupms_app/persistance/tables/CompanyBankAccountsTable.dart';
+import 'package:nupms_app/persistance/tables/DepositBankBranchesTable.dart';
+import 'package:nupms_app/persistance/tables/DepositBanksTable.dart';
+import 'package:nupms_app/persistance/tables/DepostModesTable.dart';
 import 'package:nupms_app/persistance/tables/InvestmentsTable.dart';
 import 'package:nupms_app/persistance/tables/MembersTable.dart';
 import 'package:nupms_app/persistance/tables/SchedulesTable.dart';
@@ -39,6 +43,18 @@ class DbProvider{
     await db.execute(CollectionsTable().createDDL()).then((_){
       AppConfig.log(CollectionsTable().tableName+" Created");
     });
+    await db.execute(DepositModesTable().createDDL()).then((_){
+      AppConfig.log(DepositModesTable().tableName+" Created");
+    });
+    await db.execute(CompanyBankAccountsTable().createDDL()).then((_){
+      AppConfig.log(CompanyBankAccountsTable().tableName+" Created");
+    });
+    await db.execute(DepositBanksTable().createDDL()).then((_){
+      AppConfig.log(DepositBanksTable().tableName+" Created");
+    });
+    await db.execute(DepositBankBranchesTable().createDDL()).then((_){
+      AppConfig.log(DepositBankBranchesTable().tableName+" Created");
+    });
 
   }
 
@@ -55,6 +71,23 @@ class DbProvider{
 
     List<String> collectionIndexes = CollectionsTable().createIndexes();
     collectionIndexes.forEach((String cmd) async{
+      await db.execute(cmd);
+    });
+
+    List<String> depositModeIndexes = DepositModesTable().createIndexes();
+    depositModeIndexes.forEach((String cmd) async{
+      await db.execute(cmd);
+    });
+    List<String> companyBankAccIndexes = CompanyBankAccountsTable().createIndexes();
+    companyBankAccIndexes.forEach((String cmd) async{
+      await db.execute(cmd);
+    });
+    List<String> depositBankIndexes = DepositBanksTable().createIndexes();
+    depositBankIndexes.forEach((String cmd) async{
+      await db.execute(cmd);
+    });
+    List<String> depositBankBranchesIndexes = DepositBankBranchesTable().createIndexes();
+    depositBankBranchesIndexes.forEach((String cmd) async{
       await db.execute(cmd);
     });
   }
@@ -78,6 +111,22 @@ class DbProvider{
 
     await db.execute(CollectionsTable().dropDDL()).then((_){
       AppConfig.log(CollectionsTable().tableName+" DROPPED");
+    });
+
+    await db.execute(DepositModesTable().dropDDL()).then((_){
+      AppConfig.log(DepositModesTable().tableName+" DROPPED");
+    });
+
+    await db.execute(CompanyBankAccountsTable().dropDDL()).then((_){
+      AppConfig.log(CompanyBankAccountsTable().tableName+" DROPPED");
+    });
+
+    await db.execute(DepositBanksTable().dropDDL()).then((_){
+      AppConfig.log(DepositBanksTable().tableName+" DROPPED");
+    });
+
+    await db.execute(DepositBankBranchesTable().dropDDL()).then((_){
+      AppConfig.log(DepositBankBranchesTable().tableName+" DROPPED");
     });
 
   }

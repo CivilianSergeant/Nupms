@@ -26,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
+  TextEditingController mobileNo = TextEditingController();
 
   @override
   void initState() {
@@ -87,15 +88,16 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               children: [
                 Padding(
                   padding: EdgeInsets.only(top:logoTop),
-                  child: Text("NUMPS", style: TextStyle(
+                  child: Text("NUPMS", style: TextStyle(
                     fontSize: 35,
                     color: colorAnimation.value,
                     fontWeight: FontWeight.bold
                   ),),
                 ),
+                RoundedTextField(hintText:"Mobile No",keyboardType:TextInputType.number, topMargin: userNameTop, controller: mobileNo ,),
                 RoundedTextField(hintText:"Username",topMargin: userNameTop, controller: username ,),
                 RoundedTextField(hintText:"Password",topMargin: 5,isObscure: true,obscuringChar: '*',controller: password ,),
-                SizedBox(height:50,),
+                SizedBox(height:40,),
                 SizedBox(
 
                   width: (context.watch<AppData>().isProcessing)? 100 : MediaQuery.of(context).size.width-40,
@@ -115,7 +117,13 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                           AppConfig.log(password.text);
                           LoginService loginService = LoginService();
                           context.read<AppData>().setProcessing(true);
-                          ServiceResponse serviceResponse = await loginService.authenticate(context:context,username: username.text, password: password.text);
+                          ServiceResponse serviceResponse = await loginService
+                              .authenticate(
+                                context:context,
+                                username: username.text,
+                                password: password.text,
+                                mobileNo: mobileNo.text
+                          );
                           context.read<AppData>().setProcessing(false);
 
                           if(serviceResponse !=null && serviceResponse.status!=200){

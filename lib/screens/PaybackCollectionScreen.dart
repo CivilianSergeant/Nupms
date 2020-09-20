@@ -7,6 +7,8 @@ import 'package:nupms_app/model/Payback.dart';
 import 'package:nupms_app/model/PaybackCollectionData.dart';
 import 'package:nupms_app/persistance/entity/Member.dart';
 import 'package:nupms_app/persistance/services/CollectionService.dart';
+import 'package:nupms_app/persistance/services/CompanyBankAccountService.dart';
+import 'package:nupms_app/persistance/services/DepositModeService.dart';
 import 'package:nupms_app/widgets/Collection.dart';
 import 'package:nupms_app/widgets/TitleBar.dart';
 import 'package:provider/provider.dart';
@@ -40,8 +42,13 @@ class _PaybackCollectionScreenState extends State<PaybackCollectionScreen>{
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async{
-        context.read<AppData>().changeTitle("NUMPS");
-        print("here");
+
+        if(context.read<AppData>().isProcessing == true){
+          return false;
+        }
+
+        context.read<AppData>().changeTitle("NUPMS");
+
         return true;
       },
       child: Scaffold(
@@ -250,6 +257,14 @@ class _PaybackCollectionScreenState extends State<PaybackCollectionScreen>{
     context.read<AppData>().setProcessing(true);
     List<MemberData> memberData = await CollectionService.getCollection(code: code,
         date:context.read<PaybackCollectionData>().selectedDate);
+
+    List<Map<String,dynamic>> depositModes = await DepositModeService.getModes();
+
+
+
+
+
+
     AppConfig.log(memberData.length);
     List<Map<String,dynamic>> entrepreneurCodes = await CollectionService.getEntCodes();
 
@@ -261,6 +276,8 @@ class _PaybackCollectionScreenState extends State<PaybackCollectionScreen>{
       ));
     });
 
+    context.read<AppData>().setProcessing(false);
+
     if(mounted){
       setState(() {
         codes = _codes;
@@ -268,7 +285,9 @@ class _PaybackCollectionScreenState extends State<PaybackCollectionScreen>{
     }
 
      context.read<PaybackCollectionData>().setMemberData(memberData);
-     context.read<AppData>().setProcessing(false);
+     context.read<PaybackCollectionData>().setDepositModes(depositModes);
+
+
 
   }
 

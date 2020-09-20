@@ -9,7 +9,9 @@ class MemberData{
   String businessName;
   String unitName;
   String entrepreneurName;
+  String collectionDate;
   int slNo;
+  int installmentNo;
   double totalInvestment;
   List<Payback> paybacks;
 
@@ -19,9 +21,11 @@ class MemberData{
     this.currentPageNo,
     this.code,
     this.businessName,
+    this.collectionDate,
     this.unitName,
     this.entrepreneurName,
     this.paybacks,
+    this.installmentNo,
     this.totalInvestment
   });
 

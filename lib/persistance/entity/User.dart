@@ -1,6 +1,7 @@
 class User{
 
   int id;
+  String orgShortCode;
   int unitId;
   String unitName;
   int areaId;
@@ -15,6 +16,7 @@ class User{
 
   User({
     this.id,
+    this.orgShortCode,
     this.unitId,
     this.unitName,
     this.areaId,
@@ -30,6 +32,7 @@ class User{
   factory User.fromJSON(Map<String,dynamic> map){
     return User(
         id: map['id'],
+        orgShortCode: map['orgShortCode'],
         unitId: map['unitId'],
         unitName: map['unitName'],
         areaId: map['areaId'],
@@ -46,6 +49,7 @@ class User{
   factory User.fromMap(Map<String,dynamic> map){
     return User(
         id: map['id'],
+        orgShortCode: map['org_short_code'],
         unitId: map['unit_id'],
         unitName: map['unit_name'],
         areaId: map['area_id'],
@@ -62,6 +66,7 @@ class User{
   Map<String,dynamic> toMap(){
     return {
       "id": id,
+      "org_short_code": orgShortCode,
       "unit_id": unitId,
       "unit_name": unitName,
       "area_id": areaId,

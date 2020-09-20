@@ -11,8 +11,6 @@ import 'package:sqflite/sqflite.dart';
 
 class SplashScreen extends StatefulWidget {
 
-
-
   @override
   State<StatefulWidget> createState() => _SplashScreenState();
 
@@ -98,7 +96,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               children: [
                 Padding(
                   padding: EdgeInsets.only(top:logoTop),
-                  child: Text("NUMPS", style: TextStyle(
+                  child: Text("NUPMS", style: TextStyle(
                     fontSize: 35,
                     color: colorAnimation.value,
                     fontWeight: FontWeight.bold

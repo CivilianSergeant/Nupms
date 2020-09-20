@@ -98,8 +98,8 @@ class CollectionItemFooter extends StatelessWidget {
         onPressed: () async{
           Payback payback = member.paybacks[member.currentPageNo];
           AppConfig.log("CurrentPageNo ${member.currentPageNo}");
-          AppConfig.log(payback.installmentNo);
-          if(validate(payback,context)){
+          AppConfig.log(payback.toMap());
+          if(validate(payback,context)){ //
 
             AppConfig.log(('Current Page ${member.currentPageNo} sdfsf'));
 
@@ -117,15 +117,22 @@ class CollectionItemFooter extends StatelessWidget {
 
               if(collectionAmount>=recoverable) {
                 double offset = 340.0;
-                await member.pageController.animateTo(
-                    offset, duration: Duration(milliseconds: 700),
-                    curve: Curves.easeInOut);
+//                AppConfig.log("BEFORE ANIMATE ${member.currentPageNo}");
+//                await member.pageController.animateTo(
+//                    offset, duration: Duration(milliseconds: 700),
+//                    curve: Curves.easeInOut);
+//                AppConfig.log("AFTER ANIMATE ${member.currentPageNo}");
               }
 
-              context.read<PaybackCollectionData>().updateMemberPayback(member,lastestRecord);
+              await Future.delayed(Duration(milliseconds: 800),(){
+                AppConfig.log("BEFORE Update ${member.currentPageNo}");
+                context.read<PaybackCollectionData>().updateMemberPayback(member,lastestRecord);
+                AppConfig.log("AFTER Update ${member.currentPageNo}");
+              });
+
 
               if(collectionAmount>=recoverable) {
-                context.read<PaybackCollectionData>().updateCurrentPage(member);
+                context.read<PaybackCollectionData>().updateCurrentPage(member, value: 0);
               }
             }
           }

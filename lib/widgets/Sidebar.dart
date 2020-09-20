@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nupms_app/model/AppData.dart';
 import 'package:nupms_app/screens/PaybackCollectionScreen.dart';
 import 'package:nupms_app/screens/ScheduleScreen.dart';
+import 'package:nupms_app/screens/UploadCollectionScreen.dart';
 import 'package:provider/provider.dart';
 
 class Sidebar extends StatefulWidget{
@@ -119,7 +120,26 @@ class _SidebarState extends State<Sidebar> {
                           },
                         ),
                       ),
-
+                      SizedBox(
+                        height: 30,
+                        width: 230,
+                        child: FlatButton(
+                          child: Row(
+                            children: <Widget>[
+                              Icon(Icons.monetization_on, color:Colors.black54),
+                              SizedBox(width: 10,),
+                              Text("Upload Collection",style: TextStyle( color:Colors.black54),),
+                            ],
+                          ),
+                          onPressed: (){
+                            context.read<AppData>().changeTitle("Upload Collection");
+                            Navigator.of(context).pop();
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context)=> UploadCollectionScreen()
+                            ));
+                          },
+                        ),
+                      ),
                       SizedBox(
                         height: 30,
                         width: 230,
@@ -132,10 +152,7 @@ class _SidebarState extends State<Sidebar> {
                             ],
                           ),
                           onPressed: (){
-//                            Navigator.of(context).pop();
-//                            Navigator.of(context).push(MaterialPageRoute(
-//                                builder: (context)=> VoucherScreen()
-//                            ));
+
                           },
                         ),
                       ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:nupms_app/config/AppConfig.dart';
 import 'package:nupms_app/model/MemberData.dart';
 import 'package:nupms_app/model/Payback.dart';
 import 'package:nupms_app/model/PaybackCollectionData.dart';
+import 'package:nupms_app/persistance/services/CompanyBankAccountService.dart';
 import 'package:nupms_app/widgets/AmountTag.dart';
 import 'package:provider/provider.dart';
 
@@ -84,7 +86,7 @@ class CollectionCard extends StatelessWidget {
                     Container(
                         alignment: Alignment.center,
                         width: MediaQuery.of(context).size.width - 21,
-                        padding: EdgeInsets.only(top: 10, left: 10),
+                        padding: EdgeInsets.only(top: 10, left: 10,bottom: 10),
                         child: Text(
                           "PAYBACK DATE: ${payback.paybackDate.toUpperCase()}",
                           style: TextStyle(
@@ -138,6 +140,7 @@ class CollectionCard extends StatelessWidget {
                     ),
                     Container(
                       width: 106,
+
                       margin: EdgeInsets.only(left: 10),
                       decoration: BoxDecoration(
                           border: Border(
@@ -149,9 +152,25 @@ class CollectionCard extends StatelessWidget {
                         style: TextStyle(
                             height: 2, fontSize: 12, color: Colors.black),
                         value: payback.selectedType,
-                        onChanged: (value) {
+                        onChanged: (value) async {
 //                                        setState(() {
+
                               payback.selectedType = value;
+                              context.read<PaybackCollectionData>().Types.forEach((element) async{
+                                AppConfig.log(element);
+                                if(element['deposit_mode_id'] == value && element['banking_type'] == 'Bank'){
+                                  List<Map<String,dynamic>> companyBankAccounts = await CompanyBankAccountService.getCompanyBankAccounts(value);
+                                  AppConfig.log(companyBankAccounts);
+                                  payback.bankingType = true;
+                                  AppConfig.log(value);
+                                  context.read<PaybackCollectionData>().setCompanyBankAccounts(companyBankAccounts);
+                                  context.read<PaybackCollectionData>().updateUI();
+                                }else{
+                                  payback.bankingType = false;
+                                  context.read<PaybackCollectionData>().updateUI();
+                                }
+                              });
+
                               context.read<PaybackCollectionData>().updateUI();
 //                                        });
                         },
@@ -159,8 +178,8 @@ class CollectionCard extends StatelessWidget {
                             .watch<PaybackCollectionData>()
                             .Types
                             .map((e) => DropdownMenuItem(
-                                  value: e['id'],
-                                  child: Text(e['name']),
+                                  value: e['deposit_mode_id'],
+                                  child: Text(e['deposit_mode_name']),
                                 ))
                             .toList(),
                         hint: Text("Deposit Mode"),
@@ -168,6 +187,57 @@ class CollectionCard extends StatelessWidget {
                       ),
                     ),
                   ],
+                ),
+                (!payback.bankingType)? SizedBox(height: 35,) :
+                Container(
+                  height: 48,
+                  margin: EdgeInsets.only(top:10,left: 10,right: 15),
+                  decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(
+                              width: 1,
+                              color: Colors.grey,
+                              style: BorderStyle.solid))),
+                  child: DropdownButton(
+                    isExpanded: true,
+                    style: TextStyle( fontSize: 12, color: Colors.black),
+                    value: payback.companyAccountId,
+                    onChanged: (value) {
+                      payback.companyAccountId = value;
+                      context.read<PaybackCollectionData>().updateUI();
+                    },
+                    items: context
+                        .watch<PaybackCollectionData>()
+                        .BankAccounts
+                        .map((e) => DropdownMenuItem(
+                      value: e['company_bank_id'],
+                      child: Container(
+
+                          height: 50,
+                          alignment: Alignment.centerLeft,
+
+
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(0.0),
+                              child: Text("${e['company_bank_name']},${e['company_bank_branch_name']}"),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(0.0),
+                              child: Text("${e['account_name']} - [${e['account_no']}]"),
+                            ),
+                            Divider()
+                          ],
+                        ),
+                      ),
+                    ))
+                        .toList(),
+                    hint: Text("Com. Bank Acc"),
+                    underline: SizedBox.shrink(),
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -177,6 +247,7 @@ class CollectionCard extends StatelessWidget {
                       width: 90,
                       margin: EdgeInsets.only(left: 10),
                       child: TextField(
+                        readOnly: payback.bankingType,
                         controller: payback.ddCheque,
                         style: TextStyle(fontSize: 12),
                         decoration: InputDecoration(hintText: "DD / Cheque"),
@@ -187,6 +258,7 @@ class CollectionCard extends StatelessWidget {
                       margin: EdgeInsets.only(left: 10),
                       child: TextField(
                         controller: payback.collectionAmount,
+                        keyboardType:TextInputType.number,
                         style: TextStyle(fontSize: 12),
                         decoration: InputDecoration(hintText: "Amount"),
                       ),
@@ -207,6 +279,8 @@ class CollectionCard extends StatelessWidget {
           );
         });
   }
+
+
 
   String getInstallmentNo(Payback payback) {
     return (payback.installmentNo < 10)

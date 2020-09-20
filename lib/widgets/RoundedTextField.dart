@@ -6,10 +6,12 @@ class RoundedTextField extends StatelessWidget {
     this.hintText,
     this.isObscure,
     this.obscuringChar,
+    this.keyboardType,
     @required this.controller,
     @required this.topMargin,
   }) : super(key: key);
 
+  final TextInputType keyboardType;
   final bool isObscure;
   final String obscuringChar;
   final String hintText;
@@ -32,6 +34,7 @@ class RoundedTextField extends StatelessWidget {
 
           ),
           child: TextField(
+            keyboardType: keyboardType,
             controller: controller,
             obscureText: (isObscure!=null)?isObscure:false,
             obscuringCharacter: (obscuringChar!=null)?obscuringChar:' ',

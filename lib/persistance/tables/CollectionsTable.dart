@@ -22,7 +22,8 @@ class CollectionsTable implements DDL{
         "deposit_mode_id INTEGER,"
         "company_account_id INTEGER,"
         "remark VARCHAR(100),"
-        "collection_date VARCHAR(20)"
+        "collection_date VARCHAR(20),"
+        "is_synced TINYINT(1)"
         ")";
   }
 

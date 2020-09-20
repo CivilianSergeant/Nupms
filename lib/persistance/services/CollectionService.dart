@@ -93,6 +93,7 @@ class CollectionService{
         installmentNo: element['installment_no'],
         investmentPB: element['investment_pb'],
         otf: element['otf'],
+        bankingType: false,
         fromInitial: DateTime.now(),
         fromStartYear: DateTime
             .now()
@@ -139,7 +140,8 @@ class CollectionService{
         entrepreneurId: payback.entrepreneurId,
         remark: payback.remark.text,
         depositModeId: payback.selectedType,
-        companyAccountId: payback.companyAccountId
+        companyAccountId: payback.companyAccountId,
+        isSynced: false,
       ).toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
       return true;
     }else{
@@ -149,6 +151,14 @@ class CollectionService{
 
 
     }
+  }
+
+  static Future<List<Map<String,dynamic>>> getUploadedCollections() async {
+    Database db = await DbProvider.db.database;
+    String sql = "SELECT m.entrepreneur_name, m.business_name, m.entrepreneur_code, c.* "
+        "FROM collections c join members m ON m.entrepreneur_id = c.entrepreneur_id"
+        " where is_synced = 0";
+    return await db.rawQuery(sql);
   }
 
 

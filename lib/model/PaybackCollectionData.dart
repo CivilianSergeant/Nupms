@@ -9,6 +9,9 @@ import 'package:nupms_app/model/Payback.dart';
 class PaybackCollectionData with ChangeNotifier{
 
     List<MemberData> _members = [];
+    List<Map<String,dynamic>> _depositModes = [];
+    List<Map<String,dynamic>> _companyBankAccounts = [];
+
     String selectedCode;
 
     String selectedDate;
@@ -17,7 +20,11 @@ class PaybackCollectionData with ChangeNotifier{
     List<Map<String,dynamic>> _types = [];
 
     List<Map<String,dynamic>> get Types{
-        return this._types;
+        return this._depositModes;
+    }
+
+    List<Map<String,dynamic>> get BankAccounts{
+        return this._companyBankAccounts;
     }
 
     List<MemberData> get Members{
@@ -28,13 +35,25 @@ class PaybackCollectionData with ChangeNotifier{
         notifyListeners();
     }
 
+
+    void setDepositModes(List<Map<String,dynamic>> dm){
+        this._depositModes = dm;
+    }
+
+    void setCompanyBankAccounts(List<Map<String,dynamic>> ac){
+        this._companyBankAccounts = ac;
+    }
+
     void updateMemberPayback(MemberData member, MemberData lastRecord){
         if(lastRecord==null){
             AppConfig.log("HERE LastRecord null");
             return;
         }
        int index =  _members.indexOf(member);
-       _members[index]=lastRecord;
+
+//       _members[index].paybacks.removeAt(0);
+        _members[index].paybacks = _members[index].paybacks.sublist(1);
+//       _members[index]=lastRecord;
        AppConfig.log('Index ${index}');
        notifyListeners();
     }
@@ -69,7 +88,7 @@ class PaybackCollectionData with ChangeNotifier{
 
     void updateCurrentPage(MemberData member, {int value}){
 
-        member.currentPageNo = (value!=null)? value : (member.currentPageNo+1);
+        member.currentPageNo = (value!=null)? value : (member.currentPageNo);
         notifyListeners();
     }
 

@@ -10,6 +10,7 @@ class Collection {
   String receiptNo;
   int companyAccountId;
   String remark;
+  bool isSynced;
 
   Collection({
     this.id,
@@ -22,7 +23,8 @@ class Collection {
     this.depositModeId,
     this.receiptNo,
     this.companyAccountId,
-    this.remark
+    this.remark,
+    this.isSynced
   });
 
   Map<String,dynamic> toMap(){
@@ -37,7 +39,8 @@ class Collection {
       'company_account_id': companyAccountId,
       'deposit_mode_id': depositModeId,
       'receipt_no':receiptNo,
-      'remark':remark
+      'remark':remark,
+      'is_synced': (isSynced)? 1 : 0
 
     };
   }

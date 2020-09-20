@@ -7,6 +7,8 @@ import 'package:nupms_app/model/ServiceResponse.dart';
 import 'package:nupms_app/persistance/entity/User.dart';
 import 'file:///C:/Users/ASUS/IdeaProjects/nupms_app/lib/persistance/services/MemberService.dart';
 import 'package:nupms_app/persistance/repository/UserRepository.dart';
+import 'package:nupms_app/persistance/services/CompanyBankAccountService.dart';
+import 'package:nupms_app/persistance/services/DepositModeService.dart';
 import 'package:nupms_app/persistance/services/UserService.dart';
 import 'package:nupms_app/services/network.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +18,7 @@ class LoginService with NetworkService{
   Future<ServiceResponse> authenticate({
     BuildContext context,
     String username,
+    String mobileNo,
     String password
   }) async{
     if(!await checkNetwork()){
@@ -26,7 +29,7 @@ class LoginService with NetworkService{
     Map<String,dynamic> data = {
       'username': username,
       'password': password,
-      'mobileNo':'01719545357',
+      'mobileNo': mobileNo, //'01719545357',
       'projectStatus': (AppConfig.getEnv() == Env.Dev)? 'Test': 'Live'
     };
     Map<String,String> header = {
@@ -52,14 +55,19 @@ class LoginService with NetworkService{
     }
 
     User user = User.fromJSON(result['common']);
+    user.orgShortCode = result['orgShortCode'];
     AppConfig.log((user.toMap()),line:'54',className: 'LoginService');
     int userId = await userService.saveUser(user);
+
     if(userId > 0){
 
-
       // Add Deposit Modes
+      int depositModeInserted = await DepositModeService.addDepositModes(result['depositModes']);
+      AppConfig.log("No of Deposit Mode: ${depositModeInserted}");
 
       // Add CompanyBankAccounts
+      int companyBankAccountInserted = await CompanyBankAccountService.addCompanyBankAccounts(result['companyBankAccounts']);
+      AppConfig.log("No of CompanyBankAccoun: ${companyBankAccountInserted}");
 
       // Add Entrepreneurs
 

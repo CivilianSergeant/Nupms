@@ -21,8 +21,8 @@ class Collection extends StatelessWidget{
             margin: EdgeInsets.all(10),
             child: CardView(
               member:member,
-              baseHeight: 298,
-              contentHeight:198,
+              baseHeight: 350,
+              contentHeight:250,
               background: Colors.indigoAccent,
               decoration: BoxDecoration(
 

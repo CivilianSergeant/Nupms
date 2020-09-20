@@ -12,6 +12,7 @@ class UsersTable implements DDL{
   String createDDL() {
    return "CREATE TABLE "+_tableName+" ("
        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+       "org_short_code VARCHAR(20),"
        "unit_id INTEGER,"
        "unit_name VARCHAR(50),"
        "area_id INTEGER,"

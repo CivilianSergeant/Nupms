@@ -20,7 +20,7 @@ class UserRepository extends BaseRepository{
   find({String where, List<dynamic> whereArgs,bool firstOnly})  async {
     final Database db = await DbProvider.db.database;
     List<Map<String,dynamic>> maps = await db.query(tableName,where: where, whereArgs: whereArgs);
-
+    AppConfig.log(maps);
     return (firstOnly != null && firstOnly == true)?
         ((maps.length>0)? User.fromMap(maps.first) : null ) : maps;
   }
