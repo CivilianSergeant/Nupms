@@ -20,6 +20,8 @@ class CollectionsTable implements DDL{
         "collected_amount REAL,"
         "receipt_no VARCHAR(50),"
         "deposit_mode_id INTEGER,"
+        "dd_cheque VARCHAR(50),"
+        "banking_type VARCHAR(10),"
         "company_account_id INTEGER,"
         "remark VARCHAR(100),"
         "collection_date VARCHAR(20),"

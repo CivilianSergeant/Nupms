@@ -49,14 +49,17 @@ class LoginService with NetworkService{
 
     if(currentUser!=null){
       // truncate all entities
-      userService.removeUsers();
-      MemberService.removeMembers();
+      await userService.removeUsers();
+      await MemberService.removeMembers();
+      await DepositModeService.truncate();
+      await CompanyBankAccountService.truncate();
 
     }
 
     User user = User.fromJSON(result['common']);
     user.orgShortCode = result['orgShortCode'];
     AppConfig.log((user.toMap()),line:'54',className: 'LoginService');
+//    return ServiceResponse(status:500,message:result['message']);
     int userId = await userService.saveUser(user);
 
     if(userId > 0){
@@ -82,6 +85,8 @@ class LoginService with NetworkService{
       if(inserted['memberInserted']>0){
         return ServiceResponse(status:200);
       }
+
+
     }
 
 

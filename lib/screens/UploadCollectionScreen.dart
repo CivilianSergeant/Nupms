@@ -3,13 +3,16 @@ import 'package:intl/intl.dart';
 import 'package:nupms_app/config/AppConfig.dart';
 import 'package:nupms_app/model/AppData.dart';
 import 'package:nupms_app/model/MemberData.dart';
+import 'package:nupms_app/model/ServiceResponse.dart';
 import 'package:nupms_app/model/UploadCollectionData.dart';
 import 'package:nupms_app/model/UploadCollectionData.dart';
+import 'package:nupms_app/persistance/entity/User.dart';
 import 'package:nupms_app/persistance/services/CollectionService.dart';
 import 'package:nupms_app/persistance/services/MemberService.dart';
 import 'package:nupms_app/widgets/CardView.dart';
 import 'package:nupms_app/widgets/ScheduleCard.dart';
 import 'package:nupms_app/widgets/TitleBar.dart';
+import 'package:nupms_app/widgets/ToastMessage.dart';
 import 'package:nupms_app/widgets/UploadCollectionCard.dart';
 import 'package:provider/provider.dart';
 
@@ -138,7 +141,7 @@ class _UploadCollectionScreenState extends State<UploadCollectionScreen>{
           child: RefreshIndicator(
             key: _refreshIndicatorKey,
             onRefresh: () async{
-              await loadMembers(code: context.read<UploadCollectionData>().selectedCode);
+              await loadMembers(code: null);
               return true;
             },
             child: Container(
@@ -151,7 +154,7 @@ class _UploadCollectionScreenState extends State<UploadCollectionScreen>{
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left:18.0,bottom: 5),
-                    child: Text("${getDate()}", style: TextStyle(
+                    child: Text("${getDate(format: 1)}", style: TextStyle(
                       color: Colors.white70,
                       fontSize: 25,
                     ),),
@@ -198,8 +201,38 @@ class _UploadCollectionScreenState extends State<UploadCollectionScreen>{
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.cloud_upload),
           backgroundColor: Colors.indigoAccent,
-          onPressed: (){
-            AppConfig.log(context.read<AppData>().user.toMap());
+          onPressed: () async{
+            User user = context.read<AppData>().user;
+            List<Map<String,dynamic>> _collections = context.read<UploadCollectionData>().Members.map((e) => {
+
+              'paybackId': e['payback_id'],
+              'newBusinessProposalId': e['new_business_proposal_id'],
+              'collectionReceiptNo':e['receipt_no'],
+              'collectionModeId':e['deposit_mode_id'],
+              'collectionDt': getDate(date:e['collection_date'],format:2),
+              'collectionModeNo':e['dd_cheque'],
+              'collectionAmt':e['collected_amount'],
+              'receivedRemarks':e['remark'],
+              'bankingType':e['banking_type'],
+              'depositBankId':e['company_account_id']
+
+            }).toList();
+
+
+            Map<String,dynamic> uploadData = {
+              'orgShortCode':user.orgShortCode,
+              'unitId': user.unitId,
+              'employeeId': user.employeeId,
+              'collections': _collections
+            };
+            ServiceResponse response = await CollectionService().uploadCollection(uploadData);
+            AppConfig.log(response);
+            if(response.status == 200){
+              await CollectionService.updateUploadedCollection();
+              await loadMembers(code: null);
+              ToastMessage.showMesssage(status: response.status,message: 'Collection Successfully uploaded',context: context);
+              context.read<AppData>().showDownLoadMenu(true);
+            }
           },
         ),
       ),
@@ -222,10 +255,11 @@ class _UploadCollectionScreenState extends State<UploadCollectionScreen>{
     _refreshIndicatorKey.currentState?.show();
   }
 
-  String getDate(){
-    String _date = context.watch<UploadCollectionData>().selectedDate;
+  String getDate({String date,int format}){
+    String _date = (date!=null)? date: context.watch<UploadCollectionData>().selectedDate;
     if(_date != null){
-      return DateFormat('dd MMMM, yyyy').format(DateTime.parse(_date));
+      String _format = (format==1)? 'dd MMMM, yyyy' : 'yyyy-MM-ddTHH:mm:ss';
+      return DateFormat(_format).format(DateTime.parse(_date));
     }
     return "";
   }

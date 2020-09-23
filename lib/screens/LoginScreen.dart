@@ -132,6 +132,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                             context.read<AppData>().setLoggedIn(true);
                           }
 
+                          context.read<AppData>().showDownLoadMenu(false);
+
                     },
                     color: Colors.indigo,
 

@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nupms_app/model/AppData.dart';
+import 'package:nupms_app/model/LoginDataNotifier.dart';
+import 'package:nupms_app/model/PaybackCollectionData.dart';
+import 'package:nupms_app/model/ScheduleData.dart';
 import 'package:nupms_app/screens/PaybackCollectionScreen.dart';
 import 'package:nupms_app/screens/ScheduleScreen.dart';
 import 'package:nupms_app/screens/UploadCollectionScreen.dart';
@@ -126,7 +129,7 @@ class _SidebarState extends State<Sidebar> {
                         child: FlatButton(
                           child: Row(
                             children: <Widget>[
-                              Icon(Icons.monetization_on, color:Colors.black54),
+                              Icon(Icons.cloud_upload, color:Colors.black54),
                               SizedBox(width: 10,),
                               Text("Upload Collection",style: TextStyle( color:Colors.black54),),
                             ],
@@ -156,7 +159,26 @@ class _SidebarState extends State<Sidebar> {
                           },
                         ),
                       ),
-                      SizedBox(height: 20,)
+                      SizedBox(height: 20,),
+                      (!context.watch<AppData>().showDownloadMenu)? SizedBox.shrink():SizedBox(
+                        height: 30,
+                        width: 230,
+                        child: FlatButton(
+                          child: Row(
+                            children: <Widget>[
+                              Icon(Icons.cloud_download, color:Colors.black54),
+                              SizedBox(width: 10,),
+                              Text("Download Master",style: TextStyle( color:Colors.black54),),
+                            ],
+                          ),
+                          onPressed: (){
+                            context.read<ScheduleData>().setMemberData([]);
+                            context.read<PaybackCollectionData>().setMemberData([]);
+                            context.read<LoginDataNotifier>().setMemberLoaded(0);
+                            context.read<AppData>().setDownloadMaster();
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),

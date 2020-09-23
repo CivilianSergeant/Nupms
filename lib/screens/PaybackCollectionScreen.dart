@@ -34,6 +34,9 @@ class _PaybackCollectionScreenState extends State<PaybackCollectionScreen>{
   int fromStartYear;
   int fromEndYear;
 
+  String firstDate;
+  String lastDate;
+
   GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
 
 
@@ -95,7 +98,7 @@ class _PaybackCollectionScreenState extends State<PaybackCollectionScreen>{
                                           readOnly: true,
                                           controller: searchDate,
                                           onTap: (){
-                                            showDatePicker(context: context, initialDate:fromInitial , firstDate: DateTime(fromStartYear), lastDate: DateTime(fromEndYear))
+                                            showDatePicker(context: context, initialDate:fromInitial , firstDate: DateTime.parse(firstDate), lastDate: DateTime.parse(lastDate))
                                                 .then((date){
                                               if(date != null){
                                                 searchDate.text = (date.toString().substring(0,11).trim());
@@ -200,7 +203,7 @@ class _PaybackCollectionScreenState extends State<PaybackCollectionScreen>{
                             fontSize: 25,
                           ),),
                         ),
-                        Padding(
+                        (context.watch<PaybackCollectionData>().selectedCode ==null)? SizedBox.shrink(): Padding(
                           padding: const EdgeInsets.only(left:18.0,bottom: 10),
                           child: Text("Selected Code: ${context.watch<PaybackCollectionData>().selectedCode !=null ? context.watch<PaybackCollectionData>().selectedCode: 'None'}", style: TextStyle(
                             color: Colors.white70,
@@ -239,8 +242,12 @@ class _PaybackCollectionScreenState extends State<PaybackCollectionScreen>{
   void init(){
     context.read<PaybackCollectionData>().setDate(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     fromInitial = DateTime.now();
-    fromStartYear = fromInitial.year;
-    fromEndYear = fromInitial.year+1;
+    fromStartYear = fromInitial.day-7;
+    fromEndYear = fromInitial.day;
+    firstDate = (DateTime.parse("${fromInitial.year-1}-${(fromInitial.month<10)? '0${fromInitial.month}' : fromInitial.month}-${(fromStartYear<10)? '0${fromStartYear}': fromStartYear}").toIso8601String());
+    lastDate = (DateTime.parse("${fromInitial.year+1}-${(fromInitial.month<10)? '0${fromInitial.month}' : fromInitial.month}-${(fromEndYear<10)? '0${fromEndYear}': fromEndYear}").toIso8601String());
+
+    AppConfig.log(fromEndYear);
     _refreshIndicatorKey.currentState?.show();
   }
 
@@ -283,9 +290,15 @@ class _PaybackCollectionScreenState extends State<PaybackCollectionScreen>{
         codes = _codes;
       });
     }
+    List<Map<String,dynamic>> _depositModes =[];
+    depositModes.forEach((e) {
+      if(e['deposit_mode_type']=='BOTH' || e['deposit_mode_type']=='COL'){
+        _depositModes.add(e);
+      }
+    });
 
      context.read<PaybackCollectionData>().setMemberData(memberData);
-     context.read<PaybackCollectionData>().setDepositModes(depositModes);
+     context.read<PaybackCollectionData>().setDepositModes(_depositModes);
 
 
 

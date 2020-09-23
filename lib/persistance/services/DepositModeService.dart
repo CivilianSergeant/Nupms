@@ -5,9 +5,9 @@ import 'package:nupms_app/persistance/DbProvider.dart';
 
 class DepositModeService {
 
-  static Future<void> truncate() async{
+  static Future<int> truncate() async{
     Database db = await DbProvider.db.database;
-    db.delete(DepositModesTable().tableName);
+    return await db.delete(DepositModesTable().tableName);
   }
 
   static Future<List<Map<String,dynamic>>> getModes() async {

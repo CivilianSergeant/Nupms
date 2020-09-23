@@ -92,7 +92,7 @@ class ScheduleDetailScreen extends StatelessWidget{
                         margin: EdgeInsets.only(top:10,bottom: 10),
                         width: MediaQuery.of(context).size.width,
                         child: CardView(
-                          baseHeight: 186,
+                          baseHeight: 188,
                           contentHeight: 150,
                           text:"PAYBACK DATE  ${getDate(payback.paybackDate)}",
                           decoration: BoxDecoration(
@@ -102,7 +102,8 @@ class ScheduleDetailScreen extends StatelessWidget{
                           ),
                           card:ScheduleDetailCard(payback:payback,memberData:memberData),
                           contentBackground: Colors.white,
-                          background: (payback.isDue && (payback.totalPayback-payback.collected)>0)? Color(0xffff6347) : Colors.indigoAccent,
+                          background: (payback.isDue && (payback.totalPayback-payback.collected)>0)? Color(0xffff6347) :
+                          (payback.collected == payback.totalPayback)? Colors.green : Colors.indigoAccent,
                         ),
                       ),
                     );

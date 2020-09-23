@@ -45,15 +45,17 @@ class PaybackCollectionData with ChangeNotifier{
     }
 
     void updateMemberPayback(MemberData member, MemberData lastRecord){
+
         if(lastRecord==null){
-            AppConfig.log("HERE LastRecord null");
+            int index =  _members.indexOf(member);
+            _members.removeAt(index);
+            notifyListeners();
             return;
         }
+
        int index =  _members.indexOf(member);
 
-//       _members[index].paybacks.removeAt(0);
-        _members[index].paybacks = _members[index].paybacks.sublist(1);
-//       _members[index]=lastRecord;
+       _members[index]=lastRecord;
        AppConfig.log('Index ${index}');
        notifyListeners();
     }

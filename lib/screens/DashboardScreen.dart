@@ -40,7 +40,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: CardView(
                     baseHeight:108,
                     text: "Welcome",
-                    contentHeight: 38,
+                    contentHeight: 58,
                     background: Colors.indigoAccent,
                     card: WelcomeCard(),
                     contentBackground:Colors.transparent

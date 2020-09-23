@@ -4,6 +4,7 @@ class Payback{
 
   int paybackId;
   int entrepreneurId;
+  String entrepreneurCode;
   int newBusinessProposalId;
   int Id;
   int installmentNo;
@@ -13,6 +14,7 @@ class Payback{
   double collected;
   String paybackDate;
   bool bankingType;
+  String bankingTypeName;
   TextEditingController collectionDate;
   TextEditingController receiptNo;
   int type;
@@ -25,15 +27,16 @@ class Payback{
   int selectedType;
   bool isDue;
   DateTime fromInitial;
-  int fromStartYear;
-  int fromEndYear;
+  String fromStartYear;
+  String fromEndYear;
 
   Payback({this.installmentNo,this.remaining, this.collectionDate,
     this.collected,this.totalPayback,this.paybackDate,this.isDue,
     this.receiptNo,this.collectionAmount,this.entrepreneurId,
     this.newBusinessProposalId,this.remark,this.paybackId,
     this.ddCheque,this.fromEndYear,this.fromStartYear,this.fromInitial,
-    this.investmentPB,this.otf,this.bankingType
+    this.investmentPB,this.otf,this.bankingType,this.bankingTypeName,
+    this.entrepreneurCode
   });
 
   Map<String,dynamic> toMap(){
@@ -42,6 +45,7 @@ class Payback{
       'collection_date':collectionDate.text,
       'collection_amount': collectionAmount.text,
       'dd_check': ddCheque.text,
+      'banking_type_name': bankingTypeName,
       'remark':remark.text,
       'receipt_no':receiptNo.text,
       'selected_mode':selectedType,

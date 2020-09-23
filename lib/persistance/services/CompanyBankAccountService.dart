@@ -7,9 +7,9 @@ import 'package:nupms_app/persistance/DbProvider.dart';
 
 class CompanyBankAccountService {
 
-  static Future<void> truncate() async{
+  static Future<int> truncate() async{
     Database db = await DbProvider.db.database;
-    db.delete(CompanyBankAccountsTable().tableName);
+    return await db.delete(CompanyBankAccountsTable().tableName);
   }
 
   static Future<List<Map<String,dynamic>>> getCompanyBankAccounts(int depositModeId) async {

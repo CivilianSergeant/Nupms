@@ -53,10 +53,11 @@ class ScheduleCard extends StatelessWidget{
           ),
           Spacer(),
           SizedBox(
-            width: 110,
+            width: 118,
 
             child:RoundedButton(
               text: "Schedule",
+
               onPressed: () async{
                 context.read<AppData>().changeTitle("");
                 List<MemberData> members = await CollectionService.getCollection(code: memberData.code,isAll: true);

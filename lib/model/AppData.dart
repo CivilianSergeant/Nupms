@@ -7,6 +7,7 @@ class AppData with ChangeNotifier{
     bool isLoggedIn = false;
     bool isProcessing = false;
     bool isAppLoaded = false;
+    bool showDownloadMenu = false;
     int totalEnts = 0;
     String selectedDate="";
     double totalCollectedAmount=0;
@@ -19,6 +20,15 @@ class AppData with ChangeNotifier{
 
     void setUser(User u){
       user = u;
+      notifyListeners();
+    }
+
+    void showDownLoadMenu(bool val){
+      this.showDownloadMenu = val;
+    }
+
+    void setDownloadMaster(){
+      this.user.downloadMaster = true;
       notifyListeners();
     }
 

@@ -22,7 +22,7 @@ class Collection extends StatelessWidget{
             child: CardView(
               member:member,
               baseHeight: 350,
-              contentHeight:250,
+              contentHeight:246,
               background: Colors.indigoAccent,
               decoration: BoxDecoration(
 

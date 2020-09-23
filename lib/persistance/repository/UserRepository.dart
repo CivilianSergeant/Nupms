@@ -30,6 +30,7 @@ class UserRepository extends BaseRepository{
 
     User user = User(
       unitId: obj['unit_id'],
+      orgShortCode: obj['org_short_code'],
       unitName: obj['unit_name'],
       areaId: obj['area_id'],
       areaName: obj['area_name'],

@@ -67,9 +67,6 @@ class CardView extends StatelessWidget{
       ),
     );
   }
-
-
-
 }
 
 class CollectionItemFooter extends StatelessWidget {
@@ -92,10 +89,17 @@ class CollectionItemFooter extends StatelessWidget {
       padding: EdgeInsets.only(left:5,right:(MediaQuery.of(context).size.width-150)),
       width: MediaQuery.of(context).size.width,
       height: 48,
-      child: (member.currentPageNo>0)? SizedBox.shrink(): RoundedButton(
+      child: (member.currentPageNo>0)? SizedBox.shrink(): (context.watch<AppData>().isProcessing)? Text("Saving...", style:TextStyle(
+        fontWeight: FontWeight.w900,color:Colors.indigoAccent,
+      )) :RoundedButton(
         color: Colors.indigoAccent,
         text: "COLLECT",
         onPressed: () async{
+          if(context.read<AppData>().isProcessing){
+            return;
+          }
+          context.read<AppData>().setProcessing(true);
+          
           Payback payback = member.paybacks[member.currentPageNo];
           AppConfig.log("CurrentPageNo ${member.currentPageNo}");
           AppConfig.log(payback.toMap());
@@ -103,7 +107,8 @@ class CollectionItemFooter extends StatelessWidget {
 
             AppConfig.log(('Current Page ${member.currentPageNo} sdfsf'));
 
-            bool status = await CollectionService.saveCollection(payback);
+            String _date = context.read<AppData>().selectedDate;
+            bool status = await CollectionService.saveCollection(payback,date:_date);
             if(status) {
               context.read<AppData>().updateTotalCollection(payback.collectionDate.text);
               double collectionAmount = double.parse(payback.collectionAmount.text);
@@ -136,7 +141,7 @@ class CollectionItemFooter extends StatelessWidget {
               }
             }
           }
-
+          context.read<AppData>().setProcessing(false);
         },
       ),
     );
@@ -170,13 +175,13 @@ class CollectionItemFooter extends StatelessWidget {
       return false;
     }
 
-    if(totalPayback < (collected+collectionAmount)){
-      double remaingingAmount = (collected+collectionAmount)-totalPayback;
-      AppConfig.log(remaingingAmount);
-      String msg = "Collection Amount should not exceed total pabyack of installment. you can collect ${remaingingAmount} for next installment";
-      ToastMessage.showMesssage(status: 500,message:msg,context: context);
-      return false;
-    }
+//    if(totalPayback < (collected+collectionAmount)){
+//      double remaingingAmount = (collected+collectionAmount)-totalPayback;
+//      AppConfig.log(remaingingAmount);
+//      String msg = "Collection Amount should not exceed total pabyack of installment. you can collect ${remaingingAmount} for next installment";
+//      ToastMessage.showMesssage(status: 500,message:msg,context: context);
+//      return false;
+//    }
 
     return true;
   }

@@ -29,5 +29,10 @@ class MemberData{
     this.totalInvestment
   });
 
-
+  Map<String,dynamic> toMap(){
+    return {
+      'code':code,
+      'installmentNo': installmentNo
+    };
+  }
 }

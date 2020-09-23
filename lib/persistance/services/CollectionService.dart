@@ -1,19 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:nupms_app/config/ApiUrl.dart';
 import 'package:nupms_app/config/AppConfig.dart';
 import 'package:nupms_app/model/MemberData.dart';
 import 'package:nupms_app/model/Payback.dart';
+import 'package:nupms_app/model/ServiceResponse.dart';
 import 'package:nupms_app/persistance/DbProvider.dart';
 import 'package:nupms_app/persistance/entity/Collection.dart';
 import 'package:nupms_app/persistance/tables/CollectionsTable.dart';
+import 'package:nupms_app/services/network.dart';
 import 'package:sqflite/sqflite.dart';
 
-class CollectionService{
+class CollectionService extends NetworkService{
+
+  static Future<int> truncate() async {
+    Database db = await DbProvider.db.database;
+    return await db.delete(CollectionsTable().tableName);
+  }
 
   static Future<List<Map<String,dynamic>>> getEntCodes() async {
     Database db = await DbProvider.db.database;
     List<Map<String,dynamic>> maps = await db.rawQuery("SELECT DISTINCT m.entrepreneur_code from members m");
     return maps;
   }
+
+  static Future<int> updateUploadedCollection() async {
+    Database db = await DbProvider.db.database;
+    return await db.update(CollectionsTable().tableName, {'is_synced':1},where: 'is_synced=0');
+  }
+
   static Future<List<MemberData>> getCollection({String code,String date,bool isAll}) async{
     Database db = await DbProvider.db.database;
     List<MemberData> memberDatas = [];
@@ -77,6 +92,9 @@ class CollectionService{
   }
 
   static Payback _getPayback(double remainingBalance, Map<String,dynamic> element,Map<String,dynamic> map){
+    DateTime fromInitial = DateTime.now();
+    int fromStartYear = fromInitial.day-7;
+    int fromEndYear = fromInitial.day;
     return Payback(
         remark: TextEditingController(),
         receiptNo: TextEditingController(),
@@ -84,6 +102,7 @@ class CollectionService{
         collectionDate: TextEditingController(),
         ddCheque: TextEditingController(),
         entrepreneurId: map['entrepreneur_id'],
+        entrepreneurCode: map['entrepreneur_code'],
         paybackId: element['payback_id'],
         newBusinessProposalId: map['new_business_proposal_id'],
         isDue: (element['due'] == 1) ? true : false,
@@ -94,13 +113,9 @@ class CollectionService{
         investmentPB: element['investment_pb'],
         otf: element['otf'],
         bankingType: false,
-        fromInitial: DateTime.now(),
-        fromStartYear: DateTime
-            .now()
-            .year,
-        fromEndYear: (DateTime
-            .now()
-            .year + 1),
+        fromInitial: fromInitial,
+        fromStartYear:(DateTime.parse("${fromInitial.year}-${(fromInitial.month<10)? '0${fromInitial.month}' : fromInitial.month}-${(fromStartYear<10)? '0${fromStartYear}': fromStartYear}").toIso8601String()),
+        fromEndYear: (DateTime.parse("${fromInitial.year}-${(fromInitial.month<10)? '0${fromInitial.month}' : fromInitial.month}-${(fromEndYear<10)? '0${fromEndYear}': fromEndYear}").toIso8601String()),
         collected: (element['collected_amount'] != null)
             ? element['collected_amount']
             : 0
@@ -122,7 +137,7 @@ class CollectionService{
     return (maps.length>0)? (((maps.first)['total']==null)?0:(maps.first)['total']):0;
   }
 
-  static Future<bool> saveCollection(Payback payback) async{
+  static Future<bool> saveCollection(Payback payback,{String date}) async{
     Database db = await DbProvider.db.database;
     double collectionAmount = double.parse(payback.collectionAmount.text);
     double recoverable = payback.remaining;
@@ -135,6 +150,8 @@ class CollectionService{
         receiptNo: payback.receiptNo.text,
         installmentNo: payback.installmentNo,
         paybackId: payback.paybackId,
+        ddCheque: payback.ddCheque.text,
+        bankingType: payback.bankingTypeName,
         newBusinessProposalId: payback.newBusinessProposalId,
         collectedAmount: collectionAmount,
         entrepreneurId: payback.entrepreneurId,
@@ -145,11 +162,67 @@ class CollectionService{
       ).toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
       return true;
     }else{
-      // find next installment paybackId
 
       // save advance payment of installment
 
+      List<MemberData> result = await getCollection(code:payback.entrepreneurCode,date: date);
+      MemberData memberData = result.length>0? result.first: null;
+      if(memberData==null){
+        return false;
+      }
 
+      AppConfig.log(memberData.paybacks);
+      AppConfig.log(date);
+
+      // find next installment paybackId
+      for(Payback element in memberData.paybacks) {
+        if(collectionAmount > element.totalPayback){
+          double remaining = (collectionAmount -  element.totalPayback);
+          await db.insert(CollectionsTable().tableName,Collection(
+            collectionDate: payback.collectionDate.text,
+            receiptNo: payback.receiptNo.text,
+            installmentNo: element.installmentNo,
+            paybackId: element.paybackId,
+            ddCheque: payback.ddCheque.text,
+            bankingType: payback.bankingTypeName,
+            newBusinessProposalId: element.newBusinessProposalId,
+            collectedAmount: element.totalPayback,
+            entrepreneurId: element.entrepreneurId,
+            remark: payback.remark.text,
+            depositModeId: payback.selectedType,
+            companyAccountId: payback.companyAccountId,
+            isSynced: false,
+          ).toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
+          AppConfig.log("PAID ${element.installmentNo} ${payback.totalPayback}");
+          collectionAmount = remaining;
+          AppConfig.log("REMAINING BALANCE: ${collectionAmount}");
+        }else{
+          if(collectionAmount>0) {
+            AppConfig.log("Balance ${element.installmentNo} ${collectionAmount}");
+
+            await db.insert(CollectionsTable().tableName,Collection(
+              collectionDate: payback.collectionDate.text,
+              receiptNo: payback.receiptNo.text,
+              installmentNo: element.installmentNo,
+              paybackId: element.paybackId,
+              ddCheque: payback.ddCheque.text,
+              bankingType: payback.bankingTypeName,
+              newBusinessProposalId: element.newBusinessProposalId,
+              collectedAmount: collectionAmount,
+              entrepreneurId: element.entrepreneurId,
+              remark: payback.remark.text,
+              depositModeId: payback.selectedType,
+              companyAccountId: payback.companyAccountId,
+              isSynced: false,
+            ).toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
+
+            collectionAmount=0;
+          }
+        }
+      }
+
+//      AppConfig.log("AFTER LOOP");
+      return true;
     }
   }
 
@@ -159,6 +232,37 @@ class CollectionService{
         "FROM collections c join members m ON m.entrepreneur_id = c.entrepreneur_id"
         " where is_synced = 0";
     return await db.rawQuery(sql);
+  }
+
+  Future<ServiceResponse> uploadCollection(Map<String,dynamic> uploadData) async {
+
+      if(!await checkNetwork()){
+        return ServiceResponse(
+          status: 500,
+          message: "Please Make sure internet connection is available"
+        );
+      }
+
+      setUrl(getApiUrl('upload-collection'));
+      Map<String,dynamic> result = await super.post(uploadData,header: {'Content-Type':'application/json'});
+      AppConfig.log(result, line: '238',className: 'CollectionService');
+      if(result == null){
+        return ServiceResponse(
+          status: 404,
+          message: 'Sorry! Please Try Again Later.'
+        );
+      }
+      if(result['status']==200){
+        return ServiceResponse(
+          status:200,
+          message:'Collection Successfully Uploaded'
+        );
+      }else{
+        return ServiceResponse(
+          status: result['status'],
+          message: result['message']
+        );
+      }
   }
 
 

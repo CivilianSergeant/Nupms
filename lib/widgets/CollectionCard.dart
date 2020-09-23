@@ -97,19 +97,19 @@ class CollectionCard extends StatelessWidget {
                   ],
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
                       width: 100,
-                      padding: EdgeInsets.only(top: 0, left: 10),
+                      padding: EdgeInsets.only(top: 0, left: 5, right:5),
                       child: Column(
                         children: [
                           TextField(
                             readOnly: true,
                             controller: payback.collectionDate,
                             onTap: (){
-                              showDatePicker(context: context, initialDate:payback.fromInitial , firstDate: DateTime(payback.fromStartYear), lastDate: DateTime(payback.fromEndYear))
+                              showDatePicker(context: context, initialDate:payback.fromInitial , firstDate: DateTime.parse(payback.fromStartYear), lastDate: DateTime.parse(payback.fromEndYear))
                                   .then((date){
                                 if(date != null){
                                   payback.collectionDate.text = (date.toString().substring(0,11).trim());
@@ -158,6 +158,9 @@ class CollectionCard extends StatelessWidget {
                               payback.selectedType = value;
                               context.read<PaybackCollectionData>().Types.forEach((element) async{
                                 AppConfig.log(element);
+                                if(element['deposit_mode_id'] == value){
+                                  payback.bankingTypeName = element['banking_type'];
+                                }
                                 if(element['deposit_mode_id'] == value && element['banking_type'] == 'Bank'){
                                   List<Map<String,dynamic>> companyBankAccounts = await CompanyBankAccountService.getCompanyBankAccounts(value);
                                   AppConfig.log(companyBankAccounts);
@@ -167,6 +170,7 @@ class CollectionCard extends StatelessWidget {
                                   context.read<PaybackCollectionData>().updateUI();
                                 }else{
                                   payback.bankingType = false;
+
                                   context.read<PaybackCollectionData>().updateUI();
                                 }
                               });
@@ -188,7 +192,7 @@ class CollectionCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                (!payback.bankingType)? SizedBox(height: 35,) :
+                (!payback.bankingType)? SizedBox(height: 25,) :
                 Container(
                   height: 48,
                   margin: EdgeInsets.only(top:10,left: 10,right: 15),
@@ -240,12 +244,12 @@ class CollectionCard extends StatelessWidget {
                   ),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
                       width: 90,
-                      margin: EdgeInsets.only(left: 10),
+                      margin: EdgeInsets.only(left: 5, right:5),
                       child: TextField(
                         readOnly: payback.bankingType,
                         controller: payback.ddCheque,
