@@ -56,6 +56,7 @@ class CollectionService extends NetworkService{
       List<Map<String,dynamic>> scheduleMaps = await db.rawQuery(sql);
       List<Payback> _paybacks = [];
       scheduleMaps.forEach((element) {
+//        AppConfig.log(element);
         if(isAll!=null && isAll){
           double remainingBalance = (element['collected_amount'] != null)
               ? (element['total_paybackable'] - element['collected_amount'])
@@ -72,7 +73,9 @@ class CollectionService extends NetworkService{
         }
 
       });
-//      AppConfig.log(scheduleMaps);
+
+
+//      AppConfig.log(_paybacks);
 
 //      AppConfig.log("__________________________");
       MemberData memberData = MemberData(
@@ -176,8 +179,9 @@ class CollectionService extends NetworkService{
 
       // find next installment paybackId
       for(Payback element in memberData.paybacks) {
-        if(collectionAmount > element.totalPayback){
-          double remaining = (collectionAmount -  element.totalPayback);
+
+        if(collectionAmount >= element.totalPayback){
+          double remaining = (element.collected==0)? (collectionAmount -  element.totalPayback) : (collectionAmount-(element.totalPayback - element.collected));
           await db.insert(CollectionsTable().tableName,Collection(
             collectionDate: payback.collectionDate.text,
             receiptNo: payback.receiptNo.text,
@@ -186,14 +190,14 @@ class CollectionService extends NetworkService{
             ddCheque: payback.ddCheque.text,
             bankingType: payback.bankingTypeName,
             newBusinessProposalId: element.newBusinessProposalId,
-            collectedAmount: element.totalPayback,
+            collectedAmount: (element.collected==0)? element.totalPayback : (element.totalPayback-element.collected),
             entrepreneurId: element.entrepreneurId,
             remark: payback.remark.text,
             depositModeId: payback.selectedType,
             companyAccountId: payback.companyAccountId,
             isSynced: false,
           ).toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
-          AppConfig.log("PAID ${element.installmentNo} ${payback.totalPayback}");
+          AppConfig.log("PAID ${element.installmentNo} ${(element.collected==0)? element.totalPayback : (element.totalPayback-element.collected)}");
           collectionAmount = remaining;
           AppConfig.log("REMAINING BALANCE: ${collectionAmount}");
         }else{
