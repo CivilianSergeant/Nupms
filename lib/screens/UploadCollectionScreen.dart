@@ -219,9 +219,9 @@ class _UploadCollectionScreenState extends State<UploadCollectionScreen>{
                 imageBytes = imgFile.readAsBytesSync();
               }
               _deposits.add({
-                'upToDate': '2020-09-30T00:00:00',
+                'upToDate': getDate(date:element['up_to_date'],format: 2),
                 'depositModeNo':element['deposit_slip_number'],
-                'collectionTransferDateSt': element['collection_transfer_date'],
+                'collectionTransferDateSt':getDate(date:element['collection_transfer_date'],format: 2),
                 'depositModeId':element['deposit_mode_id'],
                 'depositBankId':element['deposit_bank_id'],
                 'depositBankBranchId':element['deposit_bank_branch_id'],
@@ -254,14 +254,16 @@ class _UploadCollectionScreenState extends State<UploadCollectionScreen>{
               'collections': _collections,
               'deposits': _deposits
             };
-//            ServiceResponse response = await CollectionService().uploadCollection(uploadData);
+            ServiceResponse response = await CollectionService().uploadCollection(uploadData);
             AppConfig.log(uploadData);
-//            if(response.status == 200){
-//              await CollectionService.updateUploadedCollection();
-//              await loadMembers(code: null);
-//              ToastMessage.showMesssage(status: response.status,message: 'Collection Successfully uploaded',context: context);
-//              context.read<AppData>().showDownLoadMenu(true);
-//            }
+            if(response.status == 200){
+              await CollectionService.updateUploadedCollection();
+              await loadMembers(code: null);
+              ToastMessage.showMesssage(status: response.status,message: 'Collection Successfully uploaded',context: context);
+              context.read<AppData>().showDownLoadMenu(true);
+            }else{
+              ToastMessage.showMesssage(status: response.status,message: response.message ,context: context);
+            }
           },
         ),
       ),
