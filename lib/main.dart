@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nupms_app/config/AppConfig.dart';
+import 'package:nupms_app/config/FileHelper.dart';
+import 'package:nupms_app/config/portrait_mode_mixin.dart';
 import 'package:nupms_app/model/AppData.dart';
+import 'package:nupms_app/model/DepositData.dart';
 import 'package:nupms_app/model/LoginDataNotifier.dart';
 import 'package:nupms_app/model/PaybackCollectionData.dart';
 import 'package:nupms_app/model/ScheduleData.dart';
@@ -11,19 +13,24 @@ import 'package:nupms_app/screens/LoginScreen.dart';
 import 'package:nupms_app/screens/SplashScreen.dart';
 import 'package:provider/provider.dart';
 
+
 void main() {
+
+  
+
   runApp( MultiProvider(
       providers: [
         ChangeNotifierProvider<AppData>( create: (context) => AppData()),
         ChangeNotifierProvider<PaybackCollectionData>( create: (context) => PaybackCollectionData()),
         ChangeNotifierProvider<ScheduleData>( create: (context) => ScheduleData()),
+        ChangeNotifierProvider<DepositData>( create: (context) => DepositData()),
         ChangeNotifierProvider<UploadCollectionData>( create: (context) => UploadCollectionData()),
         ChangeNotifierProvider<LoginDataNotifier>( create: (context) => LoginDataNotifier())
       ],
       child:MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget with PortraitModeMixin {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -49,9 +56,11 @@ class MyApp extends StatelessWidget {
         return DashboardScreen();
       }
     }
-    AppConfig.log("here");
+    
     return LoginScreen();
   }
+
+
 }
 
 

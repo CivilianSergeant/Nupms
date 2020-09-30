@@ -103,23 +103,29 @@ class MemberService{
             scheduleCount++;
 
 
-            if(schedule['payback'] !=null) {
-              String collectionDate = schedule['payback']['collectionDate'];
-              collectionDate = _correctDateFormat(collectionDate);
-              Map<String, dynamic> _collection = (Collection(
-                  entrepreneurId: element['entrepreneurId'],
-                  paybackId: schedule['paybackId'],
-                  installmentNo: schedule['installmentNo'],
-                  collectedAmount: schedule['payback']['amount'],
-                  collectionDate: collectionDate,
-                  isSynced: true,
-              ).toMap());
+            if(schedule['paybacks'] !=null) {
+              for(Map<String,dynamic> _payback in schedule['paybacks']){
+                String collectionDate = _payback['collectionDate'];
+                collectionDate = _correctDateFormat(collectionDate);
 
-              collectionBatch.insert(
-                  CollectionsTable().tableName, _collection);
+                Map<String, dynamic> _collection = (Collection(
+
+                    entrepreneurId: element['entrepreneurId'],
+                    paybackId: schedule['paybackId'],
+                    installmentNo: schedule['installmentNo'],
+                    collectedAmount: _payback['amount'],
+                    collectionDate: collectionDate,
+                    isSynced: true,
+                    isDeposited: _payback['isDeposited'],
+                    inTransit: _payback['isTransit']
+
+                ).toMap());
+
+                collectionBatch.insert(
+                    CollectionsTable().tableName, _collection);
 
                 collectionCount++;
-
+              }
             }
          }
          await Future.delayed(Duration(milliseconds: 100),(){

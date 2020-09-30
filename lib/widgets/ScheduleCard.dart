@@ -65,6 +65,7 @@ class ScheduleCard extends StatelessWidget{
                 if(members.length>0){
                   memberData.paybacks = members.first.paybacks;
                   memberData.paybacks.forEach((element) {
+//                    AppConfig.log(element.toMap());
                     totalCollection+= element.collected;
                   });
                 }

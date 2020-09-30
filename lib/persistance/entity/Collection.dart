@@ -12,6 +12,8 @@ class Collection {
   int companyAccountId;
   String remark;
   bool isSynced;
+  bool isDeposited;
+  bool inTransit;
   String bankingType;
 
   Collection({
@@ -28,6 +30,8 @@ class Collection {
     this.companyAccountId,
     this.remark,
     this.isSynced,
+    this.isDeposited,
+    this.inTransit,
     this.bankingType
   });
 
@@ -46,8 +50,9 @@ class Collection {
       'dd_cheque':ddCheque,
       'receipt_no':receiptNo,
       'remark':remark,
-      'is_synced': (isSynced)? 1 : 0
-
+      'is_synced': (isSynced)? 1 : 0,
+      'is_deposited': (isDeposited)? 1 : 0,
+      'in_transit': (inTransit)? 1 : 0,
     };
   }
 }

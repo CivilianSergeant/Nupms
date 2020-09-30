@@ -49,13 +49,26 @@ class ScheduleDetailCard extends StatelessWidget{
               )
             ]
           ),
-          SizedBox(height: 20,),
+          SizedBox(height: 15,),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               BigAmountTag(amount: (payback.totalPayback-payback.collected),amountSize: 30, text: "REMAINING",),
-              BigAmountTag(amount: payback.collected, amountSize:30, text: "PAID",)
+              BigAmountTag(amount: payback.collected, amountSize:30, text: "COLLECTED",)
+            ],
+          ),
+          SizedBox(height: 5,),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text("DEPOSIT: ${payback.isDeposited? 'DONE': 'PENDING'}",style: TextStyle(
+                color:Colors.black54
+              ),),
+              Text("TRANSIT: ${payback.isTransit? 'DONE': 'PENDING'}",style: TextStyle(
+                  color:Colors.black54
+              ),),
             ],
           )
 

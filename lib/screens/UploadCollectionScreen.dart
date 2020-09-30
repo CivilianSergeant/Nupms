@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nupms_app/config/AppConfig.dart';
@@ -8,6 +12,7 @@ import 'package:nupms_app/model/UploadCollectionData.dart';
 import 'package:nupms_app/model/UploadCollectionData.dart';
 import 'package:nupms_app/persistance/entity/User.dart';
 import 'package:nupms_app/persistance/services/CollectionService.dart';
+import 'package:nupms_app/persistance/services/DepositService.dart';
 import 'package:nupms_app/persistance/services/MemberService.dart';
 import 'package:nupms_app/widgets/CardView.dart';
 import 'package:nupms_app/widgets/ScheduleCard.dart';
@@ -202,7 +207,30 @@ class _UploadCollectionScreenState extends State<UploadCollectionScreen>{
           child: Icon(Icons.cloud_upload),
           backgroundColor: Colors.indigoAccent,
           onPressed: () async{
+
             User user = context.read<AppData>().user;
+            List<Map<String,dynamic>> deposits = await DepositService.getDeposits();
+            List<Map<String,dynamic>> _deposits = [];
+            for(Map<String,dynamic> element in deposits) {
+              var id = element['id'];
+              File imgFile = (element['deposit_slip_image'] != null)? File(element['deposit_slip_image']) :null;
+              Uint8List imageBytes;
+              if(imgFile != null && imgFile.existsSync()) {
+                imageBytes = imgFile.readAsBytesSync();
+              }
+              _deposits.add({
+                'upToDate': '2020-09-30T00:00:00',
+                'depositModeNo':element['deposit_slip_number'],
+                'collectionTransferDateSt': element['collection_transfer_date'],
+                'depositModeId':element['deposit_mode_id'],
+                'depositBankId':element['deposit_bank_id'],
+                'depositBankBranchId':element['deposit_bank_branch_id'],
+                'depositCompanyBankId':element['company_bank_account_id'],
+                'depositTotalAmount':element['deposit_amount'],
+                'depositSlipPic': (imageBytes!=null)?base64Encode(imageBytes):null,
+                'details':await CollectionService.getDepositDetails(id)
+              });
+            }
             List<Map<String,dynamic>> _collections = context.read<UploadCollectionData>().Members.map((e) => {
 
               'paybackId': e['payback_id'],
@@ -223,16 +251,17 @@ class _UploadCollectionScreenState extends State<UploadCollectionScreen>{
               'orgShortCode':user.orgShortCode,
               'unitId': user.unitId,
               'employeeId': user.employeeId,
-              'collections': _collections
+              'collections': _collections,
+              'deposits': _deposits
             };
-            ServiceResponse response = await CollectionService().uploadCollection(uploadData);
-            AppConfig.log(response);
-            if(response.status == 200){
-              await CollectionService.updateUploadedCollection();
-              await loadMembers(code: null);
-              ToastMessage.showMesssage(status: response.status,message: 'Collection Successfully uploaded',context: context);
-              context.read<AppData>().showDownLoadMenu(true);
-            }
+//            ServiceResponse response = await CollectionService().uploadCollection(uploadData);
+            AppConfig.log(uploadData);
+//            if(response.status == 200){
+//              await CollectionService.updateUploadedCollection();
+//              await loadMembers(code: null);
+//              ToastMessage.showMesssage(status: response.status,message: 'Collection Successfully uploaded',context: context);
+//              context.read<AppData>().showDownLoadMenu(true);
+//            }
           },
         ),
       ),

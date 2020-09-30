@@ -25,7 +25,10 @@ class CollectionsTable implements DDL{
         "company_account_id INTEGER,"
         "remark VARCHAR(100),"
         "collection_date VARCHAR(20),"
-        "is_synced TINYINT(1)"
+        "is_synced TINYINT(1),"
+        "is_deposited TINYINT(1),"
+        "in_transit TINYINT(1),"
+        "deposit_id INTEGER DEFAULT NULL"
         ")";
   }
 

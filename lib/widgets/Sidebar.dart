@@ -4,6 +4,7 @@ import 'package:nupms_app/model/AppData.dart';
 import 'package:nupms_app/model/LoginDataNotifier.dart';
 import 'package:nupms_app/model/PaybackCollectionData.dart';
 import 'package:nupms_app/model/ScheduleData.dart';
+import 'package:nupms_app/screens/DepositScreen.dart';
 import 'package:nupms_app/screens/PaybackCollectionScreen.dart';
 import 'package:nupms_app/screens/ScheduleScreen.dart';
 import 'package:nupms_app/screens/UploadCollectionScreen.dart';
@@ -52,10 +53,15 @@ class _SidebarState extends State<Sidebar> {
                           )),
                     ),
                   ),
-                  SizedBox(height: 20,),
+                  SizedBox(height: 15,),
                   Text("Welcome ${widget.name!=null? widget.name :''}",style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold
+                  ),),
+                  SizedBox(height: 5,),
+                  Text("Version: 1.1.2", style: TextStyle(
+                    color:Colors.white,
+                    fontSize: 11
                   ),)
                 ],
               ),
@@ -129,6 +135,26 @@ class _SidebarState extends State<Sidebar> {
                         child: FlatButton(
                           child: Row(
                             children: <Widget>[
+                              Icon(Icons.account_balance, color:Colors.black54),
+                              SizedBox(width: 10,),
+                              Text("Deposit",style: TextStyle( color:Colors.black54),),
+                            ],
+                          ),
+                          onPressed: (){
+                            context.read<AppData>().changeTitle("Deposit");
+                            Navigator.of(context).pop();
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => DepositScreen()
+                            ));
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                        width: 230,
+                        child: FlatButton(
+                          child: Row(
+                            children: <Widget>[
                               Icon(Icons.cloud_upload, color:Colors.black54),
                               SizedBox(width: 10,),
                               Text("Upload Collection",style: TextStyle( color:Colors.black54),),
@@ -140,22 +166,6 @@ class _SidebarState extends State<Sidebar> {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context)=> UploadCollectionScreen()
                             ));
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        height: 30,
-                        width: 230,
-                        child: FlatButton(
-                          child: Row(
-                            children: <Widget>[
-                              Icon(Icons.account_balance, color:Colors.black54),
-                              SizedBox(width: 10,),
-                              Text("Deposit",style: TextStyle( color:Colors.black54),),
-                            ],
-                          ),
-                          onPressed: (){
-
                           },
                         ),
                       ),

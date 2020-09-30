@@ -66,6 +66,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     double actionButtonTop = passwordTop+10;
 
     return Scaffold(
+      backgroundColor: Colors.indigo,
       body: SingleChildScrollView(
         child: Stack(
           children:[

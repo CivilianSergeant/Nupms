@@ -39,11 +39,12 @@ class CollectionService extends NetworkService{
        
 
     for(Map<String,dynamic> map in maps){
-             
 
+      String totalNoPayback = "(SELECT count(c.payback_id) totalNoPayback from collections c WHERE c.payback_id = s.payback_id) as totalNoPayback";
+      String totalNoDeposited = "(SELECT sum(c.is_deposited) totalNoDeposited from collections c WHERE c.payback_id = s.payback_id) as totalNoDeposited";
+      String totalNoTransit = "(SELECT sum(c.in_transit) totalNoTransit from collections c WHERE c.payback_id = s.payback_id) as totalNoTransit";
 
-
-      String sql = "SELECT (strftime(s.payback_date)<strftime('%Y-%m-%d','now')) due,s.investment_pb, s.otf, s.total_paybackable,("
+      String sql = "SELECT  ${totalNoPayback},${totalNoDeposited},${totalNoTransit}, (strftime(s.payback_date)<strftime('%Y-%m-%d','now')) due,s.investment_pb, s.otf, s.total_paybackable,("
           "SELECT sum(collected_amount) collected_amount FROM collections c WHERE c.payback_id = s.payback_id GROUP BY c.installment_no"
           ") collected_amount ,s.payback_date,s.installment_no, s.payback_id from schedules s ";
       sql += "WHERE  s.entrepreneur_id="+map['entrepreneur_id'].toString();
@@ -121,8 +122,24 @@ class CollectionService extends NetworkService{
         fromEndYear: (DateTime.parse("${fromInitial.year}-${(fromInitial.month<10)? '0${fromInitial.month}' : fromInitial.month}-${(fromEndYear<10)? '0${fromEndYear}': fromEndYear}").toIso8601String()),
         collected: (element['collected_amount'] != null)
             ? element['collected_amount']
-            : 0
+            : 0,
+        isDeposited: isDeposited(element),
+        isTransit: inTransit(element)
     );
+  }
+
+  static bool isDeposited(Map<String,dynamic> element){
+    if(element['totalNoPayback'] == element['totalNoDeposited']){
+      return true;
+    }
+    return false;
+  }
+
+  static bool inTransit(Map<String,dynamic> element){
+    if(element['totalNoPayback'] == element['totalNoTransit']){
+      return true;
+    }
+    return false;
   }
 
   Future<Map<String,dynamic>> getNextPaybackId(int installmentNo, int paybackId) async{
@@ -162,6 +179,8 @@ class CollectionService extends NetworkService{
         depositModeId: payback.selectedType,
         companyAccountId: payback.companyAccountId,
         isSynced: false,
+        isDeposited: false,
+        inTransit: false,
       ).toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
       return true;
     }else{
@@ -196,6 +215,8 @@ class CollectionService extends NetworkService{
             depositModeId: payback.selectedType,
             companyAccountId: payback.companyAccountId,
             isSynced: false,
+            isDeposited: false,
+            inTransit: false,
           ).toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
           AppConfig.log("PAID ${element.installmentNo} ${(element.collected==0)? element.totalPayback : (element.totalPayback-element.collected)}");
           collectionAmount = remaining;
@@ -218,6 +239,8 @@ class CollectionService extends NetworkService{
               depositModeId: payback.selectedType,
               companyAccountId: payback.companyAccountId,
               isSynced: false,
+              isDeposited: false,
+              inTransit: false,
             ).toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
 
             collectionAmount=0;
@@ -267,6 +290,19 @@ class CollectionService extends NetworkService{
           message: result['message']
         );
       }
+  }
+
+  static Future<int> updateDeposit(id, depositId) async{
+    Database db = await DbProvider.db.database;
+    return await db.update(CollectionsTable().tableName,
+        {'is_deposited':1,'deposit_id':depositId},where: 'id=?',whereArgs: [id]);
+  }
+
+  static Future<List<Map<String,dynamic>>> getDepositDetails(int id) async{
+    Database db = await DbProvider.db.database;
+    return db.rawQuery("SELECT new_business_proposal_id as newBusinessProposalId, payback_id as paybackId, collected_amount as collectionAmount,"
+        "collected_amount as depositAmount From collections WHERE deposit_id=${id}");
+
   }
 
 

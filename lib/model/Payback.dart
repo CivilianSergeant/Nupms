@@ -29,6 +29,9 @@ class Payback{
   DateTime fromInitial;
   String fromStartYear;
   String fromEndYear;
+  bool isDeposited;
+  bool isTransit;
+
 
   Payback({this.installmentNo,this.remaining, this.collectionDate,
     this.collected,this.totalPayback,this.paybackDate,this.isDue,
@@ -36,7 +39,7 @@ class Payback{
     this.newBusinessProposalId,this.remark,this.paybackId,
     this.ddCheque,this.fromEndYear,this.fromStartYear,this.fromInitial,
     this.investmentPB,this.otf,this.bankingType,this.bankingTypeName,
-    this.entrepreneurCode
+    this.entrepreneurCode,this.isDeposited,this.isTransit
   });
 
   Map<String,dynamic> toMap(){
@@ -52,6 +55,9 @@ class Payback{
       'entrepreneur_id': entrepreneurId,
       'new_business_proposal_id': newBusinessProposalId,
       'company_bank_id': companyAccountId,
+      'collected':collected,
+      'is_deposited':isDeposited,
+      'is_transit':isTransit
     };
   }
 

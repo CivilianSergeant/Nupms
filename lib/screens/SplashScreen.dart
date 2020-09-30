@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nupms_app/config/AppConfig.dart';
+import 'package:nupms_app/config/FileHelper.dart';
 import 'package:nupms_app/model/AppData.dart';
 import 'package:nupms_app/persistance/DbProvider.dart';
 import 'package:nupms_app/persistance/entity/User.dart';
@@ -50,6 +51,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 
   Future<void> initDb() async {
+    FileHelper.hasPermission();
+
     AppConfig.log("HERE INIT DB");
     final Database db = await DbProvider.db.database;
     UserService userService = UserService(userRepo: UserRepository());
@@ -74,6 +77,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     double actionButtonTop = passwordTop+10;
 
     return Scaffold(
+      backgroundColor: Colors.indigo,
       body: SingleChildScrollView(
         child: Stack(
           children:[

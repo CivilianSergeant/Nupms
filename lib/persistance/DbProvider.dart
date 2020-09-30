@@ -3,6 +3,7 @@ import 'package:nupms_app/persistance/tables/CollectionsTable.dart';
 import 'package:nupms_app/persistance/tables/CompanyBankAccountsTable.dart';
 import 'package:nupms_app/persistance/tables/DepositBankBranchesTable.dart';
 import 'package:nupms_app/persistance/tables/DepositBanksTable.dart';
+import 'package:nupms_app/persistance/tables/DepositsTable.dart';
 import 'package:nupms_app/persistance/tables/DepostModesTable.dart';
 import 'package:nupms_app/persistance/tables/InvestmentsTable.dart';
 import 'package:nupms_app/persistance/tables/MembersTable.dart';
@@ -56,6 +57,10 @@ class DbProvider{
       AppConfig.log(DepositBankBranchesTable().tableName+" Created");
     });
 
+    await db.execute(DepositsTable().createDDL()).then((_){
+      AppConfig.log(DepositsTable().tableName+" Created");
+    });
+
   }
 
   void _createIndexes(Database db) {
@@ -88,6 +93,11 @@ class DbProvider{
     });
     List<String> depositBankBranchesIndexes = DepositBankBranchesTable().createIndexes();
     depositBankBranchesIndexes.forEach((String cmd) async{
+      await db.execute(cmd);
+    });
+
+    List<String> depositsIndexes = DepositsTable().createIndexes();
+    depositsIndexes.forEach((String cmd) async{
       await db.execute(cmd);
     });
   }
@@ -127,6 +137,10 @@ class DbProvider{
 
     await db.execute(DepositBankBranchesTable().dropDDL()).then((_){
       AppConfig.log(DepositBankBranchesTable().tableName+" DROPPED");
+    });
+
+    await db.execute(DepositsTable().dropDDL()).then((_){
+      AppConfig.log(DepositsTable().tableName+" DROPPED");
     });
 
   }
