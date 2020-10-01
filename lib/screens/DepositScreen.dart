@@ -125,7 +125,8 @@ class _DepositScreenState extends State<DepositScreen>{
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 10),
       height: MediaQuery.of(context).size.height,
-      child: ListView.builder(
+      child: (context.watch<DepositData>().Deposits.length==0)? Center(child:Text("Create New Deposit",
+      style: TextStyle(fontWeight: FontWeight.w700,color: Colors.white60),)): ListView.builder(
           itemCount: context.watch<DepositData>().Deposits.length,
           itemBuilder: (context,i){
             Map<String,dynamic> deposit = context.read<DepositData>().Deposits[i];

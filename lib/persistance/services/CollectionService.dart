@@ -97,6 +97,7 @@ class CollectionService extends NetworkService{
 
   static Payback _getPayback(double remainingBalance, Map<String,dynamic> element,Map<String,dynamic> map){
     DateTime fromInitial = DateTime.now();
+    fromInitial = DateTime(fromInitial.year,fromInitial.month,fromInitial.day-7);
     int fromStartYear = fromInitial.day-7;
     int fromEndYear = fromInitial.day;
     return Payback(
@@ -285,6 +286,8 @@ class CollectionService extends NetworkService{
           message:'Collection Successfully Uploaded'
         );
       }else{
+        AppConfig.log(result['message'],line:'289',className: 'CollectionService');
+        AppConfig.log(result['messageDetails'],line:'290',className: 'CollectionService');
         return ServiceResponse(
           status: result['status'],
           message: result['message']

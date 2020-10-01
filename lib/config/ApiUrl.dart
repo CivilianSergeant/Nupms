@@ -9,7 +9,7 @@ String SANDBOX_URL='http://api.nupms.com/api/v1/';
 
 Map<String,dynamic> urls = {
   'login' : 'login',
-  'upload-collection' : 'UploadCollection',
+  'upload-collection' : 'collectionwithdeposit/upload', //http://api.nupms.com/api/v1/collectionwithdeposit/upload
 //  'user-verified' : 'register/verified',
 //  'find-by-imei': "register/client/{imei}",
 //  'chart-accounts-by-btype':'chart-accounts/business-type/{btype}',

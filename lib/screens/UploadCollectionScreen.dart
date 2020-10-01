@@ -227,7 +227,7 @@ class _UploadCollectionScreenState extends State<UploadCollectionScreen>{
                 'depositBankBranchId':element['deposit_bank_branch_id'],
                 'depositCompanyBankId':element['company_bank_account_id'],
                 'depositTotalAmount':element['deposit_amount'],
-                'depositSlipPic': (imageBytes!=null)?base64Encode(imageBytes):null,
+                'depositSlipPic': (imageBytes!=null)? base64Encode(imageBytes) : null,
                 'details':await CollectionService.getDepositDetails(id)
               });
             }
@@ -255,14 +255,15 @@ class _UploadCollectionScreenState extends State<UploadCollectionScreen>{
               'deposits': _deposits
             };
             ServiceResponse response = await CollectionService().uploadCollection(uploadData);
-            AppConfig.log(uploadData);
+//            AppConfig.log(uploadData);
             if(response.status == 200){
               await CollectionService.updateUploadedCollection();
               await loadMembers(code: null);
               ToastMessage.showMesssage(status: response.status,message: 'Collection Successfully uploaded',context: context);
               context.read<AppData>().showDownLoadMenu(true);
             }else{
-              ToastMessage.showMesssage(status: response.status,message: response.message ,context: context);
+
+              ToastMessage.showMesssage(status: response.status,message: "Please Try Again Later" ,context: context);
             }
           },
         ),

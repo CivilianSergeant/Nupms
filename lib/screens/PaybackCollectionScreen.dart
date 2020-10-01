@@ -31,8 +31,8 @@ class _PaybackCollectionScreenState extends State<PaybackCollectionScreen>{
   TextEditingController searchDate = TextEditingController();
 
   DateTime fromInitial;
-  int fromStartYear;
-  int fromEndYear;
+  int fromStartDay;
+  int fromEndDay;
 
   String firstDate;
   String lastDate;
@@ -46,9 +46,9 @@ class _PaybackCollectionScreenState extends State<PaybackCollectionScreen>{
     return WillPopScope(
       onWillPop: () async{
 
-        if(context.read<AppData>().isProcessing == true){
-          return false;
-        }
+//        if(context.read<AppData>().isProcessing == true){
+//          return false;
+//        }
 
         context.read<AppData>().changeTitle("NUPMS");
 
@@ -239,15 +239,24 @@ class _PaybackCollectionScreenState extends State<PaybackCollectionScreen>{
     Future.delayed(Duration(milliseconds: 2),init);
   }
 
+  int getNumberOfDay(int lastMonthIndex){
+    List<int> days = [31,28,31,30,31,30,31,31,30,31,30,31];
+    return days[lastMonthIndex];
+  }
+
   void init(){
     context.read<PaybackCollectionData>().setDate(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     fromInitial = DateTime.now();
-    fromStartYear = fromInitial.day-7;
-    fromEndYear = fromInitial.day;
-    firstDate = (DateTime.parse("${fromInitial.year-1}-${(fromInitial.month<10)? '0${fromInitial.month}' : fromInitial.month}-${(fromStartYear<10)? '0${fromStartYear}': fromStartYear}").toIso8601String());
-    lastDate = (DateTime.parse("${fromInitial.year+1}-${(fromInitial.month<10)? '0${fromInitial.month}' : fromInitial.month}-${(fromEndYear<10)? '0${fromEndYear}': fromEndYear}").toIso8601String());
+    String _firstDate;
 
-    AppConfig.log(fromEndYear);
+    fromInitial = DateTime(fromInitial.year,fromInitial.month,fromInitial.day-7);
+    fromStartDay = fromInitial.day;
+    fromEndDay = fromInitial.day;
+     _firstDate = "${fromInitial.year-1}-${((fromInitial.month<10)? '0${fromInitial.month}' : fromInitial.month)}-${(fromStartDay<10)? '0${fromStartDay}' : fromStartDay}";
+    AppConfig.log(_firstDate,line:'268',className: 'PaybackCollectionScreen');
+    firstDate = (DateTime.parse(_firstDate).toIso8601String());
+    lastDate = (DateTime.parse("${fromInitial.year+1}-${(fromInitial.month<10)? '0${fromInitial.month}' : fromInitial.month}-${(fromEndDay<10)? '0${fromEndDay}': fromEndDay}").toIso8601String());
+
     _refreshIndicatorKey.currentState?.show();
   }
 
