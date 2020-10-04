@@ -98,8 +98,8 @@ class CollectionService extends NetworkService{
   static Payback _getPayback(double remainingBalance, Map<String,dynamic> element,Map<String,dynamic> map){
     DateTime fromInitial = DateTime.now();
     fromInitial = DateTime(fromInitial.year,fromInitial.month,fromInitial.day-7);
-    int fromStartYear = fromInitial.day-7;
-    int fromEndYear = fromInitial.day;
+    int fromStartYear = fromInitial.day;
+    int fromEndYear = fromInitial.day+7;
     return Payback(
         remark: TextEditingController(),
         receiptNo: TextEditingController(),

@@ -152,6 +152,7 @@ class _PaybackCollectionScreenState extends State<PaybackCollectionScreen>{
                                           onPressed: (){
                                             _refreshIndicatorKey.currentState?.show();
 //                                        context.read<PaybackCollectionData>().setSelectedCode(null);
+                                            Navigator.of(context).pop();
                                           },
                                         ),
                                         FlatButton(

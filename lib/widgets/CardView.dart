@@ -89,9 +89,13 @@ class CollectionItemFooter extends StatelessWidget {
       padding: EdgeInsets.only(left:5,right:(MediaQuery.of(context).size.width-150)),
       width: MediaQuery.of(context).size.width,
       height: 48,
-      child: (member.currentPageNo>0)? SizedBox.shrink(): (context.watch<AppData>().isProcessing)? Text("Saving...", style:TextStyle(
-        fontWeight: FontWeight.w900,color:Colors.indigoAccent,
-      )) :RoundedButton(
+      child: (member.currentPageNo>0)? SizedBox.shrink(): (context.watch<AppData>().isProcessing)?
+      Padding(
+        padding: const EdgeInsets.only(top:15.0,left:5::),
+        child: Text("Saving...", style:TextStyle(
+          fontWeight: FontWeight.w900,color:Colors.indigoAccent,
+        )),
+      ) :RoundedButton(
         color: Colors.indigoAccent,
         text: "COLLECT",
         onPressed: () async{
