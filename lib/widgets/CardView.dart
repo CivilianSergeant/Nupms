@@ -91,7 +91,7 @@ class CollectionItemFooter extends StatelessWidget {
       height: 48,
       child: (member.currentPageNo>0)? SizedBox.shrink(): (context.watch<AppData>().isProcessing)?
       Padding(
-        padding: const EdgeInsets.only(top:15.0,left:5::),
+        padding: const EdgeInsets.only(top:15.0,left:5),
         child: Text("Saving...", style:TextStyle(
           fontWeight: FontWeight.w900,color:Colors.indigoAccent,
         )),
