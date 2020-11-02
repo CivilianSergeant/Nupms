@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:nupms_app/config/AppConfig.dart';
 import 'package:nupms_app/model/AppData.dart';
 import 'package:provider/provider.dart';
 
@@ -29,9 +31,21 @@ class WelcomeCard extends StatelessWidget{
               "${context.watch<AppData>().user.areaName}, "
               "${context.watch<AppData>().user.unitName}", style: textStyle,),
         ),
-
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0),
+          child: Text("${getDate(context)}",style: textStyle,),
+        )
       ],
     );
+  }
+
+  String getDate(BuildContext context){
+    String _date = context.watch<AppData>().selectedDate;
+    AppConfig.log(_date,line:'44',className: 'WelcomeCard');
+    if(_date != null && _date.trim() != ""){
+      return DateFormat('dd MMMM, yyyy').format(DateTime.parse(_date));
+    }
+    return "";
   }
 
 }

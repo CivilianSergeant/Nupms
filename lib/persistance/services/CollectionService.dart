@@ -153,8 +153,29 @@ class CollectionService extends NetworkService{
 
   static Future<double> getCollectionCount(String date) async{
     Database db = await DbProvider.db.database;
-    List<Map<String,dynamic>> maps = await db.rawQuery("SELECT sum(c.collected_amount) as total from collections c "
-        "where c.collection_date LIKE '${date}%'");
+    String sql = "SELECT sum(c.collected_amount) as total from collections c "
+        "where c.collection_date LIKE '${date}%' and c.is_synced=0";
+    List<Map<String,dynamic>> maps = await db.rawQuery(sql);
+    return (maps.length>0)? (((maps.first)['total']==null)?0:(maps.first)['total']):0;
+  }
+
+  static Future<double> getLastSevenDaysCollectionAmount(String currentDate) async{
+    DateTime fromInitial = DateTime.parse(currentDate);
+    fromInitial = DateTime(fromInitial.year,fromInitial.month,fromInitial.day-7);
+    int fromStartYear = fromInitial.day;
+    int fromEndYear = fromInitial.day+7;
+
+    String startDate = (DateTime.parse("${fromInitial.year}-${(fromInitial.month<10)? '0${fromInitial.month}' : fromInitial.month}-${(fromStartYear<10)? '0${fromStartYear}': fromStartYear}").toIso8601String());
+    String endDate = (DateTime.parse("${fromInitial.year}-${(fromInitial.month<10)? '0${fromInitial.month}' : fromInitial.month}-${(fromEndYear<10)? '0${fromEndYear}': fromEndYear}").toIso8601String());
+
+    Database db = await DbProvider.db.database;
+    String sql = "SELECT sum(c.collected_amount) as total from collections c "
+        " WHERE strftime('%s',c.collection_date) <= strftime('%s','${endDate}') AND  strftime('%s',c.collection_date) >= strftime('%s','${startDate}')";
+    List<Map<String,dynamic>> maps = await db.rawQuery(sql);
+
+    maps.forEach((element) {
+      AppConfig.log(element,line: '176',className: 'CollectionService');
+    });
     return (maps.length>0)? (((maps.first)['total']==null)?0:(maps.first)['total']):0;
   }
 
@@ -290,7 +311,7 @@ class CollectionService extends NetworkService{
         AppConfig.log(result['messageDetails'],line:'290',className: 'CollectionService');
         return ServiceResponse(
           status: result['status'],
-          message: result['message']
+          message: result['message']+result['messageDetails']
         );
       }
   }

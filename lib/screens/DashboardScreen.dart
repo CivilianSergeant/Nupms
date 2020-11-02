@@ -48,7 +48,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Row(
                 children: [
                   BadgeTile(text: "Entrepreneurs Count",amount:context.watch<AppData>().totalEnts.toString(),color: Colors.white,),
-                  BadgeTile(text: "Collected Amount",amount:context.watch<AppData>().totalCollectedAmount.toString(),color: Colors.white,)
+                  BadgeTile(text: "Today Collection",amount:context.watch<AppData>().totalCollectedAmount.toString(),color: Colors.white,)
+                ],
+              ),
+              Row(
+                children: [
+                  BadgeTile(text: "Last 7 days Collection",amount:context.watch<AppData>().totalSevenDaysCollectionAmount.toString(),color: Colors.white,),
                 ],
               )
             ],
@@ -78,6 +83,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     context.read<AppData>().setUser(user);
     context.read<AppData>().setTotalEnts(totalEnts);
+    context.read<AppData>().updateTotalSevenDaysCollectionAmoount(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     context.read<AppData>().updateTotalCollection(DateFormat('yyyy-MM-dd').format(DateTime.now()));
   }
 

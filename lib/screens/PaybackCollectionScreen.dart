@@ -262,9 +262,9 @@ class _PaybackCollectionScreenState extends State<PaybackCollectionScreen>{
   }
 
   loadMembers({String code}) async {
-    if(code!=null){
-      Navigator.of(context).pop();
-    }
+//    if(code!=null){
+//      Navigator.of(context).pop();
+//    }
 
     List<Map<String,dynamic>> _types = [];
     _types.add({"id":1,"name":"Cash"});

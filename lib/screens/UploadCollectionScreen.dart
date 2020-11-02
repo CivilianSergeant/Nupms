@@ -153,61 +153,81 @@ class _UploadCollectionScreenState extends State<UploadCollectionScreen>{
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height-60,
 
-              child: Column(
+              child: Stack(
+                children:[ Column(
 
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left:18.0,bottom: 5),
-                    child: Text("${getDate(format: 1)}", style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 25,
-                    ),),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left:18.0,bottom: 5),
+                      child: Text("${getDate(format: 1)}", style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 25,
+                      ),),
+                    ),
+
+                    Expanded(
+                      child: ListView.builder(
+                          itemCount: context.watch<UploadCollectionData>().Members.length,
+                          itemBuilder: (context,i){
+                            Map<String,dynamic> member  = context.watch<UploadCollectionData>().Members[i];
+                            AppConfig.log(member);
+                        return Container(
+                          margin: EdgeInsets.all(10),
+                          child: CardView(
+                            member:MemberData(
+                                businessName: member['business_name'],
+                                code: member['entrepreneur_code'],
+
+                            ),
+                            decoration: BoxDecoration(
+                              color:Colors.white,
+                              borderRadius: BorderRadius.only(bottomRight: Radius.circular(10),bottomLeft: Radius.circular(10)),
+                            ),
+                            card:UploadCollectionCard(memberData:MemberData(
+                                businessName: member['business_name'],
+                                code: member['entrepreneur_code'],
+                                entrepreneurName: member['entrepreneur_name'],
+                                totalInvestment: member['collected_amount'],
+                                installmentNo: member['installment_no'],
+                                collectionDate: member['collection_date'],
+                              unitName: context.watch<AppData>().user.unitName
+                            )),
+                            contentBackground: Colors.white,
+                            background: Colors.indigoAccent,
+                          ),
+                        );
+                      }),
+                    )
+                  ],
+                ),
+                  (context.watch<AppData>().isProcessing==false)? Container():Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    color: Colors.black26,
+                    child: Center(
+                      child: SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: CircularProgressIndicator(backgroundColor: Colors.white60,),
+                      ),
+                    ) ,
                   ),
-                  
-                  Expanded(
-                    child: ListView.builder(
-                        itemCount: context.watch<UploadCollectionData>().Members.length,
-                        itemBuilder: (context,i){
-                          Map<String,dynamic> member  = context.watch<UploadCollectionData>().Members[i];
-                          AppConfig.log(member);
-                      return Container(
-                        margin: EdgeInsets.all(10),
-                        child: CardView(
-                          member:MemberData(
-                              businessName: member['business_name'],
-                              code: member['entrepreneur_code'],
 
-                          ),
-                          decoration: BoxDecoration(
-                            color:Colors.white,
-                            borderRadius: BorderRadius.only(bottomRight: Radius.circular(10),bottomLeft: Radius.circular(10)),
-                          ),
-                          card:UploadCollectionCard(memberData:MemberData(
-                              businessName: member['business_name'],
-                              code: member['entrepreneur_code'],
-                              entrepreneurName: member['entrepreneur_name'],
-                              totalInvestment: member['collected_amount'],
-                              installmentNo: member['installment_no'],
-                              collectionDate: member['collection_date'],
-                            unitName: context.watch<AppData>().user.unitName
-                          )),
-                          contentBackground: Colors.white,
-                          background: Colors.indigoAccent,
-                        ),
-                      );
-                    }),
-                  )
+
                 ],
               ),
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: (context.watch<AppData>().isProcessing)? Container() : FloatingActionButton(
           child: Icon(Icons.cloud_upload),
           backgroundColor: Colors.indigoAccent,
           onPressed: () async{
-
+            if(context.read<AppData>().isProcessing){
+              return;
+            }
+            context.read<AppData>().setProcessing(true);
             User user = context.read<AppData>().user;
             List<Map<String,dynamic>> deposits = await DepositService.getDeposits();
             List<Map<String,dynamic>> _deposits = [];
@@ -261,10 +281,17 @@ class _UploadCollectionScreenState extends State<UploadCollectionScreen>{
               await loadMembers(code: null);
               ToastMessage.showMesssage(status: response.status,message: 'Collection Successfully uploaded',context: context);
               context.read<AppData>().showDownLoadMenu(true);
-            }else{
-
-              ToastMessage.showMesssage(status: response.status,message: "Please Try Again Later" ,context: context);
+            }else if(response.status == 500){
+              ToastMessage.showMesssage(status: response.status,message: response.message ,context: context);
             }
+            else{
+              String msg = "Please Try Again Later!";
+              if(AppConfig.env == Env.SandBox){
+                msg += response.message;
+              }
+              ToastMessage.showMesssage(status: response.status,message: msg ,context: context);
+            }
+            context.read<AppData>().setProcessing(false);
           },
         ),
       ),
@@ -280,6 +307,8 @@ class _UploadCollectionScreenState extends State<UploadCollectionScreen>{
 
 
   void init(){
+    context.read<AppData>().setProcessing(false);
+    AppConfig.log("HERE0",line: '310');
     context.read<UploadCollectionData>().setDate(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     fromInitial = DateTime.now();
     fromStartYear = fromInitial.year;

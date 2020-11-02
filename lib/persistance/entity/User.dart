@@ -12,7 +12,12 @@ class User{
   String employeeCode;
   String employeeName;
   bool downloadMaster;
-
+  int countryId;
+  String countryName;
+  int divisionId;
+  String divisionName;
+  int districtId;
+  String districtName;
 
   User({
     this.id,

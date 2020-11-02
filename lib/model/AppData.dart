@@ -11,6 +11,7 @@ class AppData with ChangeNotifier{
     int totalEnts = 0;
     String selectedDate="";
     double totalCollectedAmount=0;
+    double totalSevenDaysCollectionAmount = 0;
 
     User user = null;
 
@@ -25,6 +26,7 @@ class AppData with ChangeNotifier{
 
     void showDownLoadMenu(bool val){
       this.showDownloadMenu = val;
+      notifyListeners();
     }
 
     void setDownloadMaster(){
@@ -41,6 +43,13 @@ class AppData with ChangeNotifier{
       totalCollectedAmount = _totalCollectedAmount;
       notifyListeners();
     }
+
+    void updateTotalSevenDaysCollectionAmoount(String date) async{
+      double _totalSevenDaysCollectionAmount = await CollectionService.getLastSevenDaysCollectionAmount(date);
+      totalSevenDaysCollectionAmount = _totalSevenDaysCollectionAmount;
+      notifyListeners();
+    }
+
     void setTotalCollectedAmount(double t){
       totalCollectedAmount = t;
       notifyListeners();

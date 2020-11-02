@@ -59,7 +59,7 @@ class _SidebarState extends State<Sidebar> {
                       fontWeight: FontWeight.bold
                   ),),
                   SizedBox(height: 5,),
-                  Text("Version: 1.1.2", style: TextStyle(
+                  Text("Version: 1.1.3", style: TextStyle(
                     color:Colors.white,
                     fontSize: 11
                   ),)
