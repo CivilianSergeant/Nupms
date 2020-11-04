@@ -1,7 +1,7 @@
 import 'package:nupms_app/config/AppConfig.dart';
 
 
-String DEV_URL= 'http://api.nupms.com/api/v1/';
+String DEV_URL= 'http://10.7.1.47:56577/api/v1/';
 
 String LIVE_URL='http://api.nupms.com/api/v1/';
 

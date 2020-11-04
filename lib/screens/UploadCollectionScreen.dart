@@ -275,7 +275,6 @@ class _UploadCollectionScreenState extends State<UploadCollectionScreen>{
               'deposits': _deposits
             };
             ServiceResponse response = await CollectionService().uploadCollection(uploadData);
-//            AppConfig.log(uploadData);
             if(response.status == 200){
               await CollectionService.updateUploadedCollection();
               await loadMembers(code: null);

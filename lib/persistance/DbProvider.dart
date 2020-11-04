@@ -1,14 +1,25 @@
 import 'package:nupms_app/config/AppConfig.dart';
+import 'package:nupms_app/persistance/entity/MaritalStatus.dart';
+import 'package:nupms_app/persistance/tables/BusinessReasonsTable.dart';
 import 'package:nupms_app/persistance/tables/CollectionsTable.dart';
 import 'package:nupms_app/persistance/tables/CompanyBankAccountsTable.dart';
 import 'package:nupms_app/persistance/tables/DepositBankBranchesTable.dart';
 import 'package:nupms_app/persistance/tables/DepositBanksTable.dart';
 import 'package:nupms_app/persistance/tables/DepositsTable.dart';
 import 'package:nupms_app/persistance/tables/DepostModesTable.dart';
+import 'package:nupms_app/persistance/tables/EducationsTable.dart';
 import 'package:nupms_app/persistance/tables/InvestmentsTable.dart';
+import 'package:nupms_app/persistance/tables/MaritalStatusTable.dart';
 import 'package:nupms_app/persistance/tables/MembersTable.dart';
+import 'package:nupms_app/persistance/tables/MonthlyIncomesTable.dart';
+import 'package:nupms_app/persistance/tables/OccupationDurationsTable.dart';
+import 'package:nupms_app/persistance/tables/OccupationsTable.dart';
 import 'package:nupms_app/persistance/tables/SchedulesTable.dart';
+import 'package:nupms_app/persistance/tables/ThanasTable.dart';
+import 'package:nupms_app/persistance/tables/TrainingInfosTable.dart';
+import 'package:nupms_app/persistance/tables/UnionsTable.dart';
 import 'package:nupms_app/persistance/tables/UsersTable.dart';
+import 'package:nupms_app/persistance/tables/VillagesTable.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -59,6 +70,46 @@ class DbProvider{
 
     await db.execute(DepositsTable().createDDL()).then((_){
       AppConfig.log(DepositsTable().tableName+" Created");
+    });
+
+    await db.execute(BusinessReasonsTable().createDDL()).then((_){
+      AppConfig.log(BusinessReasonsTable().tableName+" Created");
+    });
+
+    await db.execute(EducationsTable().createDDL()).then((_){
+      AppConfig.log(EducationsTable().tableName+" Created");
+    });
+
+    await db.execute(MaritalStatusTable().createDDL()).then((_){
+      AppConfig.log(MaritalStatusTable().tableName+" Created");
+    });
+
+    await db.execute(MonthlyIncomesTable().createDDL()).then((_){
+      AppConfig.log(MonthlyIncomesTable().tableName+" Created");
+    });
+
+    await db.execute(OccupationDurationsTable().createDDL()).then((_){
+      AppConfig.log(OccupationDurationsTable().tableName+" Created");
+    });
+
+    await db.execute(OccupationsTable().createDDL()).then((_){
+      AppConfig.log(OccupationsTable().tableName+" Created");
+    });
+
+    await db.execute(ThanasTable().createDDL()).then((_){
+      AppConfig.log(ThanasTable().tableName+" Created");
+    });
+
+    await db.execute(TrainingInfosTable().createDDL()).then((_){
+      AppConfig.log(TrainingInfosTable().tableName+" Created");
+    });
+
+    await db.execute(UnionsTable().createDDL()).then((_){
+      AppConfig.log(UnionsTable().tableName+" Created");
+    });
+
+    await db.execute(VillagesTable().createDDL()).then((_){
+      AppConfig.log(VillagesTable().tableName+" Created");
     });
 
   }
@@ -142,6 +193,48 @@ class DbProvider{
     await db.execute(DepositsTable().dropDDL()).then((_){
       AppConfig.log(DepositsTable().tableName+" DROPPED");
     });
+
+    await db.execute(BusinessReasonsTable().dropDDL()).then((_){
+      AppConfig.log(BusinessReasonsTable().tableName+" DROPPED");
+    });
+
+    await db.execute(EducationsTable().dropDDL()).then((_){
+      AppConfig.log(EducationsTable().tableName+" DROPPED");
+    });
+
+    await db.execute(MaritalStatusTable().dropDDL()).then((_){
+      AppConfig.log(MaritalStatusTable().tableName+" DROPPED");
+    });
+
+    await db.execute(MonthlyIncomesTable().dropDDL()).then((_){
+      AppConfig.log(MonthlyIncomesTable().tableName+" DROPPED");
+    });
+
+    await db.execute(OccupationDurationsTable().dropDDL()).then((_){
+      AppConfig.log(OccupationDurationsTable().tableName+" DROPPED");
+    });
+
+    await db.execute(OccupationsTable().dropDDL()).then((_){
+      AppConfig.log(OccupationsTable().tableName+" DROPPED");
+    });
+
+    await db.execute(ThanasTable().dropDDL()).then((_){
+      AppConfig.log(ThanasTable().tableName+" DROPPED");
+    });
+
+    await db.execute(TrainingInfosTable().dropDDL()).then((_){
+      AppConfig.log(TrainingInfosTable().tableName+" DROPPED");
+    });
+
+    await db.execute(UnionsTable().dropDDL()).then((_){
+      AppConfig.log(UnionsTable().tableName+" DROPPED");
+    });
+
+    await db.execute(VillagesTable().dropDDL()).then((_){
+      AppConfig.log(VillagesTable().tableName+" DROPPED");
+    });
+
+
 
   }
 

@@ -7,12 +7,22 @@ import 'package:nupms_app/model/ServiceResponse.dart';
 import 'package:nupms_app/persistance/entity/User.dart';
 import 'file:///C:/Users/ASUS/IdeaProjects/nupms_app/lib/persistance/services/MemberService.dart';
 import 'package:nupms_app/persistance/repository/UserRepository.dart';
+import 'package:nupms_app/persistance/services/BusinessReasonService.dart';
 import 'package:nupms_app/persistance/services/CompanyBankAccountService.dart';
 import 'package:nupms_app/persistance/services/DepositBankService.dart';
 import 'package:nupms_app/persistance/services/DepositBranchService.dart';
 import 'package:nupms_app/persistance/services/DepositModeService.dart';
 import 'package:nupms_app/persistance/services/DepositService.dart';
+import 'package:nupms_app/persistance/services/EducationService.dart';
+import 'package:nupms_app/persistance/services/MaritalStatusService.dart';
+import 'package:nupms_app/persistance/services/MonthlyIncomeService.dart';
+import 'package:nupms_app/persistance/services/OccupationDurationService.dart';
+import 'package:nupms_app/persistance/services/OccupationService.dart';
+import 'package:nupms_app/persistance/services/ThanaService.dart';
+import 'package:nupms_app/persistance/services/TrainingInfoService.dart';
+import 'package:nupms_app/persistance/services/UnionService.dart';
 import 'package:nupms_app/persistance/services/UserService.dart';
+import 'package:nupms_app/persistance/services/VillageService.dart';
 import 'package:nupms_app/services/network.dart';
 import 'package:provider/provider.dart';
 
@@ -60,6 +70,17 @@ class LoginService with NetworkService{
       await DepositBranchService.truncate();
       await DepositService.truncate();
 
+      await BusinessReasonService.truncate();
+      await EducationService.truncate();
+      await MaritalStatusService.truncate();
+      await MonthlyIncomeService.truncate();
+      await OccupationDurationService.truncate();
+      await OccupationService.truncate();
+      await ThanaService.truncate();
+      await TrainingInfoService.truncate();
+      await UnionService.truncate();
+      await VillageService.truncate();
+
     }
 
     User user = User.fromJSON(result['common']);
@@ -87,8 +108,47 @@ class LoginService with NetworkService{
       int depositBankBranchInserted = await DepositBranchService.addDepositBank(result['depositBankBranchs']);
       AppConfig.log("No of DepositBankBranch: ${depositModeInserted}");
 
-      // Add Entrepreneurs
+      // Add BusinessReasons
+      int businessReason = await BusinessReasonService.addBusinessReasons(result['businessReasons']);
+      AppConfig.log("No of Business Reason: ${businessReason}");
 
+      // Add Educations
+      int educationInserted = await EducationService.addEducations(result['educations']);
+      AppConfig.log("No of Educations: ${educationInserted}");
+
+      // Add MaritalStatus
+      int maritalStatusInserted = await MaritalStatusService.addMaritalStatus(result['maritalStatus']);
+      AppConfig.log("No of MaritalStatus: ${maritalStatusInserted}");
+
+      // Add Monthly Income
+      int monthlyIncomeInserted = await MonthlyIncomeService.addMonthlyIncomes(result['monthlyIncomes']);
+      AppConfig.log("No of MonthlyIncomes: ${monthlyIncomeInserted}");
+
+      // Add Occupation Duration
+      int occupationDurationInserted = await OccupationDurationService.addOccupationDurations(result['occupationDurations']);
+      AppConfig.log("No of Occupation Durations: ${occupationDurationInserted}");
+
+      // Add Occupation
+      int occupationInserted = await OccupationService.addOccupations(result['occupations']);
+      AppConfig.log("No of Occupations: ${occupationInserted}");
+
+      // Add Thana
+      int thanaInserted = await ThanaService.addThanas(result['thanas']);
+      AppConfig.log("No of thanas: ${thanaInserted}");
+
+      // Add TrainingInfo
+      int TrainingInfoInserted = await TrainingInfoService.addTrainingInfo(result['trainingInfos']);
+      AppConfig.log("No of Training Info: ${TrainingInfoInserted}");
+
+      // Add Union
+      int unionInserted = await UnionService.addUnions(result['unions']);
+      AppConfig.log("No of unions: ${unionInserted}");
+
+      // Add Village
+      int villageInserted = await VillageService.addVillages(result['villages']);
+      AppConfig.log("No of villages: ${villageInserted}");
+
+      // Add Entrepreneurs
       List<dynamic> entrepreneurs = result['entrepreneurs'];
       context.read<LoginDataNotifier>().setMemberCount(entrepreneurs.length);
       Map<String,dynamic> inserted = await MemberService.addMembers(context,entrepreneurs);
